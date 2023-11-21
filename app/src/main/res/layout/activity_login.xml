@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity"
+    android:background="#00FFFF"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="match_parent"
+        android:layout_height="268dp"
+        android:layout_marginTop="15dp"
+        app:srcCompat="@drawable/log" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="LOGIN"
+        android:textAlignment="center"
+        android:textColor="#006c84"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/txtUsername"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="50dp"
+        android:backgroundTint="@color/black"
+        android:ems="10"
+        android:inputType="text"
+        android:minHeight="48dp"
+        android:hint="username"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <EditText
+        android:id="@+id/txtPassword"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="50dp"
+        android:backgroundTint="@color/black"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:hint="password"
+        android:textColor="@color/black"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@+id/buttonLogin"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:backgroundTint="#006c84"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_gravity="center"
+        android:layout_marginTop="32dp"/>
+
+    <TextView
+        android:id="@+id/textViewReg1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Belum Memiliki Akun?"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#006c84"
+        android:textAlignment="center"
+        android:layout_marginTop="18dp"/>
+
+    <TextView
+        android:id="@+id/textViewReg2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Daftar"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#006c84"
+        android:textAlignment="center"
+        android:layout_marginTop="18dp"/>
+
+</LinearLayout>
