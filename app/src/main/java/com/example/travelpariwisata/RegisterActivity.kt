@@ -8,8 +8,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -41,33 +40,69 @@ class RegisterActivity : AppCompatActivity() {
             val password = txtPassword.text.toString()
 
             if (validateInput(name, email, username, password)) {
-                // Menambahkan pengguna ke Firebase Authentication
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { authTask ->
-                        if (authTask.isSuccessful) {
-                            val userId = username
-
-                            val userObject = HashMap<String, Any>()
-                            userObject["userId"] = userId
-                            userObject["name"] = name
-                            userObject["email"] = email
-
-                            // Menambahkan informasi pengguna ke Firebase Realtime Database
-                            database.child(userId).setValue(userObject)
-                                .addOnCompleteListener { dbTask ->
-                                    if (dbTask.isSuccessful) {
-                                        showToast("Registrasi berhasil")
-                                        navigateToLoginActivity()
-                                    } else {
-                                        showToast("Registrasi Gagal di Database. ${dbTask.exception?.message}")
-                                    }
-                                }
+                checkIfUserExists(email, username, object : UserCheckCallback {
+                    override fun onUserCheckComplete(emailExists: Boolean, usernameExists: Boolean) {
+                        if (!emailExists && !usernameExists) {
+                            registerUser(name, email, username, password)
                         } else {
-                            showToast("Registrasi Gagal di Authentication. ${authTask.exception?.message}")
+                            showToast("Email atau Username sudah terdaftar")
                         }
                     }
+                })
             }
         }
+    }
+
+    private fun checkIfUserExists(email: String, username: String, callback: UserCheckCallback) {
+        val emailQuery = database.orderByChild("email").equalTo(email)
+        val usernameQuery = database.orderByChild("userId").equalTo(username)
+
+        emailQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val emailExists = dataSnapshot.exists()
+                usernameQuery.addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(dataSnapshot: DataSnapshot) {
+                        val usernameExists = dataSnapshot.exists()
+                        callback.onUserCheckComplete(emailExists, usernameExists)
+                    }
+
+                    override fun onCancelled(databaseError: DatabaseError) {
+                    }
+                })
+            }
+            override fun onCancelled(databaseError: DatabaseError) {
+            }
+        })
+    }
+
+    private fun registerUser(name: String, email: String, username: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { authTask ->
+                if (authTask.isSuccessful) {
+                    val userId = username
+
+                    val userObject = HashMap<String, Any>()
+                    userObject["userId"] = userId
+                    userObject["name"] = name
+                    userObject["email"] = email
+
+                    database.child(userId).setValue(userObject)
+                        .addOnCompleteListener { dbTask ->
+                            if (dbTask.isSuccessful) {
+                                showToast("Registrasi berhasil")
+                                navigateToLoginActivity()
+                            } else {
+                                showToast("Registrasi Gagal, Periksa kembali data anda!")
+                            }
+                        }
+                } else {
+                    showToast("Registrasi Gagal, periksa kembali data anda!")
+                }
+            }
+    }
+
+    interface UserCheckCallback {
+        fun onUserCheckComplete(emailExists: Boolean, usernameExists: Boolean)
     }
 
     private fun validateInput(name: String, email: String, username: String, password: String): Boolean {
@@ -81,8 +116,10 @@ class RegisterActivity : AppCompatActivity() {
             return false
         }
 
-        // Tambahkan validasi lain sesuai kebutuhan Anda
-
+        if (password.length < 6) {
+            showToast("Panjang kata sandi harus minimal 6 karakter")
+            return false
+        }
         return true
     }
 
@@ -96,3 +133,4 @@ class RegisterActivity : AppCompatActivity() {
         finish()
     }
 }
+
