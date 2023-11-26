@@ -4,32 +4,34 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 
 class LoginActivity : AppCompatActivity() {
-    private lateinit var auth: FirebaseAuth
-
-    private lateinit var txtUsername: EditText
-    private lateinit var txtPassword: EditText
-    private lateinit var btnLogin: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        auth = FirebaseAuth.getInstance()
+        var auth: FirebaseAuth = FirebaseAuth.getInstance()
 
-        txtUsername = findViewById(R.id.txtUsername)
-        txtPassword = findViewById(R.id.txtPassword)
-        btnLogin = findViewById(R.id.buttonLogin)
+        var txtEmail: EditText = findViewById(R.id.txtEmail)
+        var txtPassword: EditText = findViewById(R.id.txtPassword)
+        var btnLogin: Button = findViewById(R.id.buttonLogin)
+        var txtRegis: TextView = findViewById(R.id.textButtonReg)
+
+        txtRegis.setOnClickListener {
+            val intentReg  = Intent(this, RegisterActivity::class.java)
+            startActivity(intentReg)
+        }
 
         btnLogin.setOnClickListener {
-            val username = txtUsername.text.toString()
+            val email = txtEmail.text.toString()
             val password = txtPassword.text.toString()
 
-            auth.signInWithEmailAndPassword(username, password)
+            auth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this) { task ->
                     if (task.isSuccessful) {
                         showToast("Login berhasil")

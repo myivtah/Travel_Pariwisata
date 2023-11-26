@@ -27,7 +27,7 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/txtUsername"
+        android:id="@+id/txtEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"
@@ -37,7 +37,7 @@
         android:ems="10"
         android:inputType="text"
         android:minHeight="48dp"
-        android:hint="username"
+        android:hint="email"
         android:textColor="@color/black"
         android:textSize="16sp" />
 

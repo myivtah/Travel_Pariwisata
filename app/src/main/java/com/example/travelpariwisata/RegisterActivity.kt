@@ -41,20 +41,29 @@ class RegisterActivity : AppCompatActivity() {
             val password = txtPassword.text.toString()
 
             if (validateInput(name, email, username, password)) {
-                val userId = username
+                // Menambahkan pengguna ke Firebase Authentication
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { authTask ->
+                        if (authTask.isSuccessful) {
+                            val userId = username
 
-                val userObject = HashMap<String, Any>()
-                userObject["userId"] = userId
-                userObject["name"] = name
-                userObject["email"] = email
+                            val userObject = HashMap<String, Any>()
+                            userObject["userId"] = userId
+                            userObject["name"] = name
+                            userObject["email"] = email
 
-                database.child(userId).setValue(userObject)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            showToast("Registrasi berhasil")
-                            navigateToLoginActivity()
+                            // Menambahkan informasi pengguna ke Firebase Realtime Database
+                            database.child(userId).setValue(userObject)
+                                .addOnCompleteListener { dbTask ->
+                                    if (dbTask.isSuccessful) {
+                                        showToast("Registrasi berhasil")
+                                        navigateToLoginActivity()
+                                    } else {
+                                        showToast("Registrasi Gagal di Database. ${dbTask.exception?.message}")
+                                    }
+                                }
                         } else {
-                            showToast("Registrasi Gagal. ${task.exception?.message}")
+                            showToast("Registrasi Gagal di Authentication. ${authTask.exception?.message}")
                         }
                     }
             }
@@ -87,4 +96,3 @@ class RegisterActivity : AppCompatActivity() {
         finish()
     }
 }
-
