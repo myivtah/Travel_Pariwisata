@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "15914513365",
+    "project_id": "travel-pariwisata",
+    "storage_bucket": "travel-pariwisata.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:15914513365:android:70d3b0b2ab7e459420c35c",
+        "android_client_info": {
+          "package_name": "com.example.travelpariwisata"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGaNHpAunZoCnYZ_hGju-P51P6H7qTHWQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

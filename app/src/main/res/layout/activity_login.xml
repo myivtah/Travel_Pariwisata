@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LoginActivity"
-    android:background="#00FFFF"
+    android:background="#cdfcf6"
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/imageLogo"
         android:layout_width="match_parent"
         android:layout_height="268dp"
         android:layout_marginTop="15dp"
@@ -69,7 +69,7 @@
         android:layout_marginTop="32dp"/>
 
     <TextView
-        android:id="@+id/textViewReg1"
+        android:id="@+id/textViewRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Belum Memiliki Akun?"
@@ -80,7 +80,7 @@
         android:layout_marginTop="18dp"/>
 
     <TextView
-        android:id="@+id/textViewReg2"
+        android:id="@+id/textButtonReg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Daftar"
