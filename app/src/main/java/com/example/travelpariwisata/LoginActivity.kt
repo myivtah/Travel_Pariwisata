@@ -21,7 +21,7 @@ class LoginActivity : AppCompatActivity() {
             logObj.username = txtUsername.text.toString()
             logObj.password = txtPassword.text.toString()
 
-            if (logObj.loginCheck()) {
+            if (logObj.username == "Miftah" && logObj.password == "1") {
                 val intent = Intent(this, MainActivity::class.java)
                 startActivity(intent)
             } else {
