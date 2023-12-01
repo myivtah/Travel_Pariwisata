@@ -31,16 +31,22 @@ class LoginActivity : AppCompatActivity() {
             val email = txtEmail.text.toString()
             val password = txtPassword.text.toString()
 
-            auth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this) { task ->
-                    if (task.isSuccessful) {
-                        showToast("Login berhasil")
-                        navigateToMainActivity()
-                    } else {
-                        showToast("Login Gagal. ${task.exception?.message}")
+            // Validasi input
+            if (email.isEmpty() || password.isEmpty()) {
+                showToast("Harap isi semua kolom")
+            } else {
+                auth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this) { task ->
+                        if (task.isSuccessful) {
+                            showToast("Login berhasil")
+                            navigateToMainActivity()
+                        } else {
+                            showToast("Login Gagal. ${task.exception?.message}")
+                        }
                     }
-                }
+            }
         }
+
     }
 
     private fun showToast(message: String) {
