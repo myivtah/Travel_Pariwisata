@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="10dp">
@@ -10,55 +11,38 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp">
 
-        <ImageView
+        <ImageButton
             android:id="@+id/imageWisata"
             android:layout_width="match_parent"
             android:layout_height="180dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-        </ImageView>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/TextJudul"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:textSize="20dp"
+            android:layout_marginTop="136dp"
+            android:textAlignment="textStart"
             android:textColor="@color/black"
+            android:textSize="20dp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageWisata">
-        </TextView>
+            app:layout_constraintTop_toTopOf="@+id/imageWisata" />
 
         <TextView
             android:id="@+id/textViewHarga"
-            android:layout_width="500dp"
-            android:layout_height="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:textAlignment="textStart"
             android:textColor="@color/black"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/TextJudul">
-        </TextView>
-
-        <Button
-            android:id="@+id/buttonTambah"
-            android:layout_width="55dp"
-            android:layout_height="30dp"
-            android:padding="0dp"
-            android:text="+"
-            android:textColor="#D02C1A"
-            android:textSize="12dp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/textViewHarga"
-            app:layout_constraintTop_toBottomOf="@+id/TextJudul">
-
-        </Button>
-
+            app:layout_constraintStart_toStartOf="@+id/TextJudul"
+            app:layout_constraintTop_toBottomOf="@+id/TextJudul" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

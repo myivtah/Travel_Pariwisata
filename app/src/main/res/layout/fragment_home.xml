@@ -23,41 +23,37 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/imageTittle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Travel Pariwisata"
-                android:textColor="@color/black"
-                android:layout_marginStart="10dp"
-                android:textSize="30sp"
-                android:fontFamily="@font/arizonia"
+            <ImageButton
+                android:id="@+id/imageUser"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/rounder_background"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageUser"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="16dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/account_menu" />
 
             <TextView
                 android:id="@+id/textViewUser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
-                android:text="Username"
                 android:textAlignment="center"
-                android:textSize="12sp"
                 android:textColor="@color/black"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/imageUser"
+
+                app:layout_constraintStart_toEndOf="@+id/imageUser"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/notification"
+                android:backgroundTint="#BCCEF8"
+                android:background="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginEnd="10dp"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -70,8 +66,10 @@
         android:layout_marginBottom="55dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout"
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
