@@ -11,15 +11,21 @@ import androidx.fragment.app.Fragment
 class MainActivity : AppCompatActivity() {
     private lateinit var activeButton: ImageButton
     private lateinit var imageHome: ImageButton
+    private lateinit var imageStatus: ImageButton
+    private lateinit var imageTrip: ImageButton
     lateinit var imageProfile: ImageButton
-    private lateinit var actionMenu: ActionMenuView
+    private lateinit var actionHome: ActionMenuView
     private lateinit var actionProfile: ActionMenuView
+    private lateinit var actionStatus: ActionMenuView
+    private lateinit var actionTrip: ActionMenuView
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val statusFragment = StatusFragment()
+        val tripFragment = TripFragment()
         val profileFragment = ProfileFragment()
         val homeFragment = HomeFragment()
 
@@ -30,18 +36,30 @@ class MainActivity : AppCompatActivity() {
 
         imageHome = findViewById(R.id.imageButtonHome)
         imageProfile = findViewById(R.id.imageButtonProfile)
-        actionMenu = findViewById(R.id.actionMenuHome)
+        imageStatus = findViewById(R.id.imageButtonStatus)
+        imageTrip = findViewById(R.id.imageButtonTrip)
+        actionHome = findViewById(R.id.actionMenuHome)
         actionProfile = findViewById(R.id.actionMenuProfile)
+        actionStatus = findViewById(R.id.actionMenuStatus)
+        actionTrip = findViewById(R.id.actionMenuTrip)
 
         activeButton = imageHome
         applyActiveButtonStyle()
 
-        actionMenu.setOnClickListener {
+        actionHome.setOnClickListener {
             switchFragment(homeFragment, imageHome)
         }
 
         actionProfile.setOnClickListener {
             switchFragment(profileFragment, imageProfile)
+        }
+
+        actionStatus.setOnClickListener {
+            switchFragment(statusFragment, imageStatus)
+        }
+
+        actionTrip.setOnClickListener {
+            switchFragment(tripFragment, imageTrip)
         }
     }
 
@@ -64,5 +82,3 @@ class MainActivity : AppCompatActivity() {
         activeButton.clearColorFilter()
     }
 }
-
-

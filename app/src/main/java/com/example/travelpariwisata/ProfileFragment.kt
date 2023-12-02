@@ -1,5 +1,7 @@
 package com.example.travelpariwisata
 
+import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -35,23 +37,39 @@ class ProfileFragment : Fragment() {
         actionMenuView = view.findViewById(R.id.actionLogout)
 
         actionMenuView.setOnClickListener {
-            performLogout()
+            showLogoutConfirmationDialog()
         }
         return view
     }
 
+    private fun showLogoutConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Logout Confirmation")
+            .setMessage("Are you sure you want to logout?")
+            .setPositiveButton("Yes") { dialog, which ->
+                performLogout()
+            }
+            .setNegativeButton("No") { dialog, which ->
+            }
+            .show()
+    }
+
     private fun performLogout() {
-        FirebaseAuth.getInstance().signOut()
+        // Menghapus status login dari penyimpanan lokal
+        val sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("isLoggedIn", false)
+        editor.apply()
 
-        navigateToLoginActivity()
-    }
-
-    private fun navigateToLoginActivity() {
-        val intent = Intent(requireContext(), LoginActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        // Kembali ke WelcomeActivity setelah logout
+        val intent = Intent(requireActivity(), WelcomeActivity::class.java)
         startActivity(intent)
-        requireActivity().finish()
+        requireActivity().finish() // Tutup MainActivity agar tidak bisa kembali ke halaman ini
+
+        // Logout dari Firebase (jika masih digunakan)
+        FirebaseAuth.getInstance().signOut()
     }
+
 
     companion object {
         @JvmStatic

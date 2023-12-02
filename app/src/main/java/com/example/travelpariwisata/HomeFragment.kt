@@ -1,11 +1,13 @@
 package com.example.travelpariwisata
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -34,16 +36,21 @@ class HomeFragment : Fragment() {
         rvHome.layoutManager = GridLayoutManager(activity, 2)
 
         val btnUser = view.findViewById<ImageView>(R.id.imageUser)
+        val btnNotification = view.findViewById<ImageView>(R.id.imageNotification)
 
         btnUser.setOnClickListener {
             val profileFragment = ProfileFragment()
             val mainActivity = activity as? MainActivity
             mainActivity?.switchFragment(profileFragment, mainActivity.imageProfile)
         }
+        btnNotification.setOnClickListener {
+            val notificationFragment = NotificationFragment()
+            val mainActivity = activity as? MainActivity
+            mainActivity?.switchFragment(notificationFragment, mainActivity.imageProfile)
+        }
 
         return view
     }
-
 
     companion object {
         @JvmStatic
