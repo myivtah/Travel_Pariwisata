@@ -34,6 +34,15 @@ tools:context=".MainActivity">
         android:layout_marginStart="30dp"
         android:orientation="vertical">
 
+        <ActionMenuView
+            android:id="@+id/actionMenuHome"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageButton
             android:id="@+id/imageButtonHome"
             android:layout_width="wrap_content"
@@ -65,6 +74,15 @@ tools:context=".MainActivity">
         android:layout_marginStart="30dp"
         android:orientation="vertical">
 
+        <ActionMenuView
+            android:id="@+id/actionMenuStatus"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageButton
             android:id="@+id/imageButtonStatus"
             android:layout_width="wrap_content"
@@ -93,6 +111,15 @@ tools:context=".MainActivity">
         android:layout_height="match_parent"
         android:layout_marginStart="30dp"
         android:orientation="vertical">
+
+        <ActionMenuView
+            android:id="@+id/actionMenuTrip"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageButton
             android:id="@+id/imageButtonTrip"
@@ -123,6 +150,15 @@ tools:context=".MainActivity">
         android:layout_marginStart="30dp"
         android:orientation="vertical">
 
+        <ActionMenuView
+            android:id="@+id/actionMenuProfile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <ImageButton
             android:id="@+id/imageButtonProfile"
             android:layout_width="wrap_content"
@@ -132,7 +168,7 @@ tools:context=".MainActivity">
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/account" />
+            app:srcCompat="@drawable/account_menu" />
 
         <TextView
             android:layout_width="wrap_content"

@@ -1,10 +1,21 @@
 package com.example.travelpariwisata
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.ActionMenuView
 import android.widget.ImageButton
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var activeButton: ImageButton
+    private lateinit var imageHome: ImageButton
+    lateinit var imageProfile: ImageButton
+    private lateinit var actionMenu: ActionMenuView
+    private lateinit var actionProfile: ActionMenuView
+
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -17,22 +28,41 @@ class MainActivity : AppCompatActivity() {
             commit()
         }
 
-        val btnHome = findViewById<ImageButton>(R.id.imageButtonHome)
-        val btnProfile = findViewById<ImageButton>(R.id.imageButtonProfile)
+        imageHome = findViewById(R.id.imageButtonHome)
+        imageProfile = findViewById(R.id.imageButtonProfile)
+        actionMenu = findViewById(R.id.actionMenuHome)
+        actionProfile = findViewById(R.id.actionMenuProfile)
 
-        btnHome.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.fragment_container, homeFragment)
-                commit()
-            }
+        activeButton = imageHome
+        applyActiveButtonStyle()
+
+        actionMenu.setOnClickListener {
+            switchFragment(homeFragment, imageHome)
         }
 
-        btnProfile.setOnClickListener {
-            supportFragmentManager.beginTransaction().apply {
-                replace(R.id.fragment_container, profileFragment)
-                commit()
-            }
+        actionProfile.setOnClickListener {
+            switchFragment(profileFragment, imageProfile)
         }
     }
+
+    fun switchFragment(fragment: Fragment, button: ImageButton) {
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fragment_container, fragment)
+            commit()
+            clearActiveButtonStyle()
+            activeButton = button
+            applyActiveButtonStyle()
+        }
+    }
+
+    private fun applyActiveButtonStyle() {
+        activeButton.setColorFilter(ContextCompat.getColor(this, R.color.red))
+    }
+
+
+    private fun clearActiveButtonStyle() {
+        activeButton.clearColorFilter()
+    }
 }
+
 

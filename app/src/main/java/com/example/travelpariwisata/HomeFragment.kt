@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
@@ -32,8 +33,17 @@ class HomeFragment : Fragment() {
         val rvHome: RecyclerView = view.findViewById(R.id.recyclerPaket)
         rvHome.layoutManager = GridLayoutManager(activity, 2)
 
+        val btnUser = view.findViewById<ImageView>(R.id.imageUser)
+
+        btnUser.setOnClickListener {
+            val profileFragment = ProfileFragment()
+            val mainActivity = activity as? MainActivity
+            mainActivity?.switchFragment(profileFragment, mainActivity.imageProfile)
+        }
+
         return view
     }
+
 
     companion object {
         @JvmStatic
