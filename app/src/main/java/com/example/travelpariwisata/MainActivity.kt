@@ -1,10 +1,10 @@
 package com.example.travelpariwisata
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ActionMenuView
 import android.widget.ImageButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 
@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var actionStatus: ActionMenuView
     private lateinit var actionTrip: ActionMenuView
 
+    private val homeFragment = HomeFragment() // Tambahkan sebagai properti kelas
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         val statusFragment = StatusFragment()
         val tripFragment = TripFragment()
         val profileFragment = ProfileFragment()
-        val homeFragment = HomeFragment()
 
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_container, homeFragment)
@@ -77,8 +78,22 @@ class MainActivity : AppCompatActivity() {
         activeButton.setColorFilter(ContextCompat.getColor(this, R.color.red))
     }
 
-
     private fun clearActiveButtonStyle() {
         activeButton.clearColorFilter()
     }
+
+    override fun onBackPressed() {
+        // Tangani tombol kembali
+        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+        when (currentFragment) {
+            is HomeFragment -> super.onBackPressed() // Biarkan tombol kembali bekerja normal di HomeFragment
+            else -> {
+                // Ganti ke HomeFragment jika tidak di HomeFragment
+                switchFragment(homeFragment, imageHome)
+                // Tambahkan logika logout di sini jika diperlukan
+            }
+        }
+    }
+
 }
+
