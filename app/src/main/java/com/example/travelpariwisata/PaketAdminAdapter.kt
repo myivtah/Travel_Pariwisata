@@ -10,17 +10,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpariwisata.menu.PaketModel
 import com.squareup.picasso.Picasso
 
-class PaketAdapter(private val context: Context, private val paketList: List<PaketModel>) :
-    RecyclerView.Adapter<PaketAdapter.ViewHolder>() {
+class PaketAdminAdapter(private val context: Context, private val paketList: List<PaketModel>) :
+    RecyclerView.Adapter<PaketAdminAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imageView: ImageView = view.findViewById(R.id.imageWisata)
-        val judulTextView: TextView = view.findViewById(R.id.textViewJudul)
-        val hargaTextView: TextView = view.findViewById(R.id.textViewHarga)
+        val imageView: ImageView = view.findViewById(R.id.imageWisataAdmin)
+        val judulTextView: TextView = view.findViewById(R.id.textJudulAdmin)
+        val hargaTextView: TextView = view.findViewById(R.id.textViewHargaAdmin)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.cardview_paket, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.cardview_paket_admin, parent, false)
         return ViewHolder(view)
     }
 

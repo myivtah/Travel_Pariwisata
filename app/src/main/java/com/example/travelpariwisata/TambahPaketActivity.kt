@@ -1,6 +1,6 @@
 package com.example.travelpariwisata
 
-import android.annotation.SuppressLint
+
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
@@ -30,7 +30,6 @@ class TambahPaketActivity : AppCompatActivity() {
 
     lateinit var database: FirebaseDatabase
 
-    @SuppressLint("WrongViewCast", "MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tambah_paket)

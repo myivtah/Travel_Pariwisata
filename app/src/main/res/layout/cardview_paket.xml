@@ -19,12 +19,14 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/TextJudul"
+            android:id="@+id/textViewJudul"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="120dp"
             android:textAlignment="textStart"
             android:textColor="@color/black"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:textSize="20dp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -39,10 +41,12 @@
             android:textAlignment="textStart"
             android:textColor="@color/black"
             android:textSize="14sp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/TextJudul"
-            app:layout_constraintTop_toBottomOf="@+id/TextJudul" />
+            app:layout_constraintStart_toStartOf="@+id/textViewJudul"
+            app:layout_constraintTop_toBottomOf="@+id/textViewJudul" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

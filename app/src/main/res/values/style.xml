@@ -1,0 +1,9 @@
+<!-- res/values/styles.xml -->
+<resources>
+
+    <style name="ShapeAppearanceOverlay.MyApp.Button.CornerSize" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item> <!-- Sesuaikan dengan ukuran sudut yang diinginkan -->
+    </style>
+
+</resources>
