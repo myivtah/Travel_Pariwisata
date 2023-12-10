@@ -208,8 +208,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:visibility="gone">
+                app:layout_constraintEnd_toEndOf="parent">
 
             </ActionMenuView>
 
@@ -220,11 +219,11 @@
                 android:text="Admin"
                 android:textColor="@color/black"
                 android:textSize="20sp"
-                android:layout_marginStart="20dp"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/actionAdmin"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="gone">
+                app:layout_constraintTop_toTopOf="parent">
+
             </TextView>
 
         </androidx.constraintlayout.widget.ConstraintLayout>

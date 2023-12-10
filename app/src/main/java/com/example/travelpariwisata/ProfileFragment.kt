@@ -3,12 +3,14 @@ package com.example.travelpariwisata
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.appcompat.widget.ActionMenuView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -32,96 +34,135 @@ class ProfileFragment : Fragment() {
         textProfileEmail = view.findViewById(R.id.textProfileEmail)
         imageProfilePicture = view.findViewById(R.id.imageProfilePicture)
 
-        // Ambil email pengguna yang saat ini masuk
         val userEmail = FirebaseAuth.getInstance().currentUser?.email
 
-        // Pastikan email tidak null sebelum mengambil data dari database
         userEmail?.let { email ->
-            // Ambil data pengguna dari Firebase Realtime Database berdasarkan email
-            val databaseReference = FirebaseDatabase.getInstance().getReference("users")
+            val sharedPreferences =
+                requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            val isUserDataLoaded = sharedPreferences.getBoolean("isUserDataLoaded", false)
 
-            // Tambahkan query untuk mencari UID berdasarkan email
-            databaseReference.orderByChild("email").equalTo(email)
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        // Pastikan ada hasil dari query
-                        if (snapshot.exists()) {
-                            // Ambil UID pengguna (ambil UID pertama jika ada beberapa hasil)
-                            val userId = snapshot.children.firstOrNull()?.key
-
-                            // Pastikan UID tidak null sebelum mengambil data dari database
-                            userId?.let { uid ->
-                                // Ambil data pengguna dari Firebase Realtime Database berdasarkan UID
-                                val userReference =
-                                    FirebaseDatabase.getInstance().getReference("users").child(uid)
-
-                                // Tambahkan listener untuk mengambil data pengguna
-                                userReference.addListenerForSingleValueEvent(object : ValueEventListener {
-                                    override fun onDataChange(userSnapshot: DataSnapshot) {
-                                        // Pastikan ada hasil dari query
-                                        if (userSnapshot.exists()) {
-                                            // Ambil data nama dan email pengguna
-                                            val userName =
-                                                userSnapshot.child("name").getValue(String::class.java)
-                                            val userEmail =
-                                                userSnapshot.child("email").getValue(String::class.java)
-                                            val userProfilePicturePath =
-                                                userSnapshot.child("profilePicturePath")
-                                                    .getValue(String::class.java)
-
-                                            // Tampilkan nama dan email
-                                            textProfileName.text = userName.orEmpty()
-                                            textProfileEmail.text = userEmail.orEmpty()
-
-                                            // Ambil dan tampilkan gambar dari Firebase Storage
-                                            userProfilePicturePath?.let {
-                                                loadProfilePicture(it)
-                                            } ?: run {
-                                                // Jika path gambar kosong, set gambar default di sini
-                                                // Misalnya, menggunakan gambar default lokal:
-                                                setDefaultProfilePicture()
-                                            }
-                                        }
-                                    }
-
-                                    override fun onCancelled(error: DatabaseError) {
-                                    }
-                                })
-                            }
-                        }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                    }
-                })
+            if (!isUserDataLoaded) {
+                loadDataFromFirebase(email, sharedPreferences)
+            } else {
+                readDataFromSharedPreferences(sharedPreferences)
+            }
         }
 
-        // Atur listener untuk action logout
         val logoutView = view.findViewById<View>(R.id.actionLogout)
 
-// Tambahkan OnClickListener pada View tersebut
         logoutView.setOnClickListener {
-            // Tampilkan dialog konfirmasi logout
             showLogoutConfirmationDialog()
         }
 
+        val adminMenu = view.findViewById<View>(R.id.actionAdmin)
+
+        adminMenu.setOnClickListener{
+            navigateToAdminFragment()
+        }
         return view
     }
 
-    private fun loadProfilePicture(profilePicturePath: String) {
-        // Ambil referensi ke Firebase Storage
-        val storageReference = FirebaseStorage.getInstance().getReference(profilePicturePath)
+    private fun loadDataFromFirebase(
+        email: String,
+        sharedPreferences: SharedPreferences
+    ) {
+        val databaseReference = FirebaseDatabase.getInstance().getReference("users")
 
-        // Ambil gambar dari Firebase Storage dan tampilkan dengan Picasso
-        storageReference.downloadUrl.addOnSuccessListener { uri ->
-            Picasso.get().load(uri).into(imageProfilePicture)
-        }.addOnFailureListener {
-            // Handle kegagalan pengambilan gambar
+        databaseReference.orderByChild("email").equalTo(email)
+            .addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    if (snapshot.exists()) {
+                        val userId = snapshot.children.firstOrNull()?.key
+
+                        userId?.let { uid ->
+                            val userReference =
+                                FirebaseDatabase.getInstance().getReference("users").child(uid)
+
+                            userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                                override fun onDataChange(userSnapshot: DataSnapshot) {
+                                    if (userSnapshot.exists()) {
+                                        val userName =
+                                            userSnapshot.child("name").getValue(String::class.java)
+                                        val userEmail =
+                                            userSnapshot.child("email").getValue(String::class.java)
+                                        val userProfilePicturePath =
+                                            userSnapshot.child("profilePicturePath")
+                                                .getValue(String::class.java)
+
+                                        // Simpan data pengguna ke SharedPreferences
+                                        saveDataToSharedPreferences(
+                                            userName,
+                                            userEmail,
+                                            userProfilePicturePath,
+                                            sharedPreferences
+                                        )
+                                    }
+                                }
+
+                                override fun onCancelled(error: DatabaseError) {
+                                }
+                            })
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                }
+            })
+    }
+
+    private fun readDataFromSharedPreferences(sharedPreferences: SharedPreferences) {
+        val userName = sharedPreferences.getString("userName", "").orEmpty()
+        val userEmail = sharedPreferences.getString("userEmail", "").orEmpty()
+        val userProfilePicturePath = sharedPreferences.getString("userProfilePicture", "").orEmpty()
+
+        // Tampilkan data pengguna
+        setUserData(userName, userEmail, userProfilePicturePath)
+    }
+
+    private fun saveDataToSharedPreferences(
+        userName: String?,
+        userEmail: String?,
+        userProfilePicturePath: String?,
+        sharedPreferences: SharedPreferences
+    ) {
+        val editor = sharedPreferences.edit()
+        editor.putString("userName", userName.orEmpty())
+        editor.putString("userEmail", userEmail.orEmpty())
+        editor.putString("userProfilePicture", userProfilePicturePath.orEmpty())
+        editor.putBoolean("isUserDataLoaded", true) // Tandai bahwa data sudah dimuat
+        editor.apply()
+
+        // Tampilkan data pengguna
+        setUserData(userName.orEmpty(), userEmail.orEmpty(), userProfilePicturePath.orEmpty())
+    }
+
+    private fun setUserData(userName: String, userEmail: String, userProfilePicturePath: String) {
+        textProfileName.text = userName
+        textProfileEmail.text = userEmail
+
+        userProfilePicturePath.let {
+            loadProfilePicture(it)
+        } ?: run {
+            setDefaultProfilePicture()
+        }
+    }
+
+    private fun loadProfilePicture(profilePicturePath: String) {
+        if (profilePicturePath.isNotEmpty()) {
+            val storageReference = FirebaseStorage.getInstance().getReference(profilePicturePath)
+
+            storageReference.downloadUrl.addOnSuccessListener { uri ->
+                Picasso.get().load(uri).into(imageProfilePicture)
+            }.addOnFailureListener {
+                setDefaultProfilePicture()
+            }
+        } else {
+            setDefaultProfilePicture()
         }
     }
 
     private fun setDefaultProfilePicture() {
-        // Gunakan gambar default dari folder drawable
         imageProfilePicture.setImageResource(R.drawable.account)
     }
 
@@ -138,23 +179,31 @@ class ProfileFragment : Fragment() {
     }
 
     private fun performLogout() {
-        // Menghapus status login dari penyimpanan lokal
-        val sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
-        editor.putBoolean("isLoggedIn", false)
+        editor.clear()
         editor.apply()
 
-        // Kembali ke WelcomeActivity setelah logout
-        navigateToWelcomeActivity()
-
-        // Logout dari Firebase (jika masih digunakan)
         FirebaseAuth.getInstance().signOut()
+
+        requireActivity().runOnUiThread {
+            navigateToWelcomeActivity()
+        }
     }
 
     private fun navigateToWelcomeActivity() {
         val intent = Intent(requireActivity(), WelcomeActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-        requireActivity().finish() // Tutup ProfileActivity agar tidak bisa kembali ke halaman ini
+        requireActivity().finish()
+    }
+
+    private fun navigateToAdminFragment() {
+        val adminFragment = AdminFragment()
+        val transaction = requireActivity().supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.fragment_container, adminFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 }

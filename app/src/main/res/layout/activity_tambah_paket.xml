@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp"
+    tools:context=".TambahPaketActivity">
+
+    <TextView
+        android:id="@+id/textViewMenuTambah"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Tambah Paket"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewIdTambah"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="60dp"
+        android:text="No ID Paket : "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewMenuTambah" />
+
+    <EditText
+        android:id="@+id/editText2"
+        android:layout_width="185dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewNamaTambah"
+        app:layout_constraintStart_toEndOf="@+id/textViewNamaTambah"
+        app:layout_constraintTop_toTopOf="@+id/textViewNamaTambah" />
+
+    <TextView
+        android:id="@+id/textViewNamaTambah"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Nama Paket : "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewIdTambah"
+        app:layout_constraintTop_toBottomOf="@+id/textViewIdTambah" />
+
+    <EditText
+        android:layout_width="190dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewIdTambah"
+        app:layout_constraintStart_toEndOf="@+id/textViewIdTambah"
+        app:layout_constraintTop_toTopOf="@+id/textViewIdTambah"
+        app:layout_constraintVertical_bias="0.466" />
+
+    <TextView
+        android:id="@+id/textViewHargaTambah"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Harga Paket : "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/textViewNamaTambah"
+        app:layout_constraintTop_toBottomOf="@+id/textViewNamaTambah" />
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="185dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/textViewHargaTambah"
+        app:layout_constraintStart_toEndOf="@+id/textViewHargaTambah"
+        app:layout_constraintTop_toTopOf="@+id/textViewHargaTambah" />
+
+    <ImageView
+        android:id="@+id/imageMenu"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="44dp"
+        android:src="@drawable/image_search"
+        app:layout_constraintStart_toStartOf="@+id/textViewHargaTambah"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHargaTambah" />
+
+    <Button
+        android:id="@+id/buttonAddImage"
+        android:layout_width="42dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="4dp"
+        android:backgroundTint="#D02C1A"
+        android:textColor="@color/white"
+        android:text="+"
+        app:layout_constraintBottom_toBottomOf="@+id/imageMenu"
+        app:layout_constraintEnd_toEndOf="@+id/imageMenu" />
+
+    <Button
+        android:id="@+id/buttonSaveMenu"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="#D02C1A"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageMenu" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
