@@ -1,5 +1,5 @@
-package com.example.travelpariwisata
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.example.travelpariwisata.R
 import com.example.travelpariwisata.menu.PaketModel
 import com.google.android.material.button.MaterialButton
 import com.squareup.picasso.Picasso
@@ -41,11 +42,23 @@ class PaketAdminAdapter(private val context: Context, private val paketList: Lis
         holder.hargaTextView.text = paket.harga.toString()
 
         holder.hapusButton.setOnClickListener {
-            onItemClickListener?.invoke(paket)
+            showDeleteConfirmationDialog(paket)
         }
     }
 
     override fun getItemCount(): Int {
         return paketList.size
+    }
+
+    private fun showDeleteConfirmationDialog(paket: PaketModel) {
+        val builder = AlertDialog.Builder(context)
+        builder.setTitle("Konfirmasi Hapus")
+        builder.setMessage("Apakah Anda yakin ingin menghapus paket ini?")
+        builder.setPositiveButton("Ya") { _, _ ->
+            // Panggil fungsi hapus item di sini
+            onItemClickListener?.invoke(paket)
+        }
+        builder.setNegativeButton("Tidak", null)
+        builder.show()
     }
 }
