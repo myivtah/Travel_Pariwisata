@@ -15,6 +15,9 @@
         android:theme="@style/Theme.TravelPariwisata"
         tools:targetApi="31">
         <activity
+            android:name=".PaymentActivity"
+            android:exported="false" />
+        <activity
             android:name=".TambahPaketActivity"
             android:exported="false" />
         <activity
