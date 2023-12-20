@@ -6,11 +6,14 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.travelpariwisata.menu.PaketModel
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -32,7 +35,7 @@ class EditPaketActivity : AppCompatActivity() {
     private var harga: Int = 0
     private lateinit var imageUrl: String
 
-    private lateinit var editTextIdEdit: EditText
+    private lateinit var textViewIdEdit: TextView
     private lateinit var editTextNamaEdit: EditText
     private lateinit var editTextHargaEdit: EditText
     private lateinit var imageMenuEdit: ImageView
@@ -55,7 +58,7 @@ class EditPaketActivity : AppCompatActivity() {
 
         supportActionBar?.hide()
 
-        editTextIdEdit = findViewById(R.id.editTextIdEdit)
+        textViewIdEdit = findViewById(R.id.textViewIdEdit)
         editTextNamaEdit = findViewById(R.id.editTextNamaEdit)
         editTextHargaEdit = findViewById(R.id.editTextHargaEdit)
         imageMenuEdit = findViewById(R.id.imageMenuEdit)
@@ -88,12 +91,15 @@ class EditPaketActivity : AppCompatActivity() {
                 val paket = snapshot.getValue(PaketModel::class.java)
                 if (paket != null) {
                     // Set data ke view
-                    editTextIdEdit.setText(paket.id)
+                    textViewIdEdit.text = paket.id
                     editTextNamaEdit.setText(paket.name)
                     editTextHargaEdit.setText(paket.harga.toString())
                     imageUrl = paket.imageUrl
 
-                    // TODO: Load gambar dari imageUrl ke imageMenuEdit (Anda dapat menggunakan Picasso atau Glide)
+                    // Load gambar dari imageUrl ke imageMenuEdit
+                    Glide.with(this@EditPaketActivity)
+                        .load(paket.imageUrl)
+                        .into(imageMenuEdit)
                 }
             }
 
@@ -111,7 +117,6 @@ class EditPaketActivity : AppCompatActivity() {
 
     private fun saveEditedDataToDatabase() {
         // Ambil data dari inputan user
-        id = editTextIdEdit.text.toString().trim()
         name = editTextNamaEdit.text.toString().trim()
         harga = editTextHargaEdit.text.toString().toInt()
 
@@ -128,9 +133,16 @@ class EditPaketActivity : AppCompatActivity() {
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
-        val imageName = "image_${id}.jpg"
+
+        // Menghasilkan nama file gambar yang unik menggunakan timestamp
+        val timestamp = System.currentTimeMillis()
+        val imageName = "image_${id}_$timestamp.jpg"
+
         val imageReference = storageReference.child("images/$imageName")
         val uploadTask: UploadTask = imageReference.putBytes(data)
+
+        // Add logging
+        Log.d("ImageUpload", "Starting image upload")
 
         uploadTask.continueWithTask { task ->
             if (!task.isSuccessful) {
@@ -146,27 +158,47 @@ class EditPaketActivity : AppCompatActivity() {
 
                 // Hapus gambar lama dari Firebase Storage (jika ada)
                 if (imageUrl.isNotEmpty()) {
-                    deleteImageFromStorage(imageUrl)
+                    deleteImageFromStorage(imageUrl) { success ->
+                        if (success) {
+                            // Perbarui data di Firebase Realtime Database
+                            updateDataInDatabase(id, name, harga, newImageUrl)
+                            // Add logging
+                            Log.d("ImageUpload", "Image upload successful")
+                        } else {
+                            // Handle the case where deleting the old image fails
+                            Toast.makeText(
+                                this,
+                                "Gagal menghapus gambar lama",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                } else {
+                    // Perbarui data di Firebase Realtime Database
+                    updateDataInDatabase(id, name, harga, newImageUrl)
+                    // Add logging
+                    Log.d("ImageUpload", "Image upload successful")
                 }
-
-                // Perbarui data di Firebase Realtime Database
-                updateDataInDatabase(id, name, harga, newImageUrl)
             } else {
                 // Handle failures
-                Toast.makeText(this, "Gagal mengunggah gambar", Toast.LENGTH_SHORT).show()
+                val errorMessage = task.exception?.message ?: "Unknown error"
+                Log.e("ImageUpload", "Image upload failed: $errorMessage")
+                Toast.makeText(this, "Gagal mengunggah gambar: $errorMessage", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
     }
 
-    private fun deleteImageFromStorage(imageUrl: String) {
-        // Hapus gambar dari Firebase Storage
+    private fun deleteImageFromStorage(imageUrl: String, callback: (Boolean) -> Unit) {
         val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
         storageReference.delete()
             .addOnSuccessListener {
                 // Gambar lama berhasil dihapus
+                callback(true)
             }
             .addOnFailureListener {
                 // Gagal menghapus gambar lama
+                callback(false)
             }
     }
 
