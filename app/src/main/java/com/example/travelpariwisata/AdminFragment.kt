@@ -1,5 +1,3 @@
-// AdminFragment.kt
-
 package com.example.travelpariwisata
 
 import PaketAdminAdapter
@@ -59,6 +57,13 @@ class AdminFragment : Fragment() {
 
             // Hapus gambar dari Firebase Storage
             deleteImageFromStorage(imageUrl, paket.id)
+        }
+
+        // Menanggapi aksi edit
+        paketAdminAdapter.setOnEditButtonClickListener { paket ->
+            val intent = Intent(requireContext(), EditPaketActivity::class.java)
+            intent.putExtra("paket_id", paket.id)
+            startActivity(intent)
         }
 
         databaseReference.addValueEventListener(object : ValueEventListener {
