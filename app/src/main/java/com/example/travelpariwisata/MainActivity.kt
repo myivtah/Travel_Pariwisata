@@ -1,99 +1,54 @@
 package com.example.travelpariwisata
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.widget.ActionMenuView
-import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var activeButton: ImageButton
-    private lateinit var imageHome: ImageButton
-    private lateinit var imageStatus: ImageButton
-    private lateinit var imageTrip: ImageButton
-    lateinit var imageProfile: ImageButton
-    private lateinit var actionHome: ActionMenuView
-    private lateinit var actionProfile: ActionMenuView
-    private lateinit var actionStatus: ActionMenuView
-    private lateinit var actionTrip: ActionMenuView
 
-    private val homeFragment = HomeFragment() // Tambahkan sebagai properti kelas
+    private lateinit var bottomNavigationView: BottomNavigationView
 
-    @SuppressLint("MissingInflatedId")
+    private val homeFragment = HomeFragment()
+    private val statusFragment = TicketFragment()
+    private val tripFragment = TripFragment()
+    private val profileFragment = ProfileFragment()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val statusFragment = StatusFragment()
-        val tripFragment = TripFragment()
-        val profileFragment = ProfileFragment()
+        bottomNavigationView = findViewById(R.id.bottomNavigationView)
 
-        supportFragmentManager.beginTransaction().apply {
-            replace(R.id.fragment_container, homeFragment)
-            commit()
+        bottomNavigationView.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.fragmentHome -> {
+                    switchFragment(homeFragment)
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.fragmentStatus -> {
+                    switchFragment(statusFragment)
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.fragmentTrip -> {
+                    switchFragment(tripFragment)
+                    return@setOnNavigationItemSelectedListener true
+                }
+                R.id.fragmentProfile -> {
+                    switchFragment(profileFragment)
+                    return@setOnNavigationItemSelectedListener true
+                }
+                else -> return@setOnNavigationItemSelectedListener false
+            }
         }
 
-        imageHome = findViewById(R.id.imageButtonHome)
-        imageProfile = findViewById(R.id.imageButtonProfile)
-        imageStatus = findViewById(R.id.imageButtonStatus)
-        imageTrip = findViewById(R.id.imageButtonTrip)
-        actionHome = findViewById(R.id.actionMenuHome)
-        actionProfile = findViewById(R.id.actionMenuProfile)
-        actionStatus = findViewById(R.id.actionMenuStatus)
-        actionTrip = findViewById(R.id.actionMenuTrip)
-
-        activeButton = imageHome
-        applyActiveButtonStyle()
-
-        actionHome.setOnClickListener {
-            switchFragment(homeFragment, imageHome)
-        }
-
-        actionProfile.setOnClickListener {
-            switchFragment(profileFragment, imageProfile)
-        }
-
-        actionStatus.setOnClickListener {
-            switchFragment(statusFragment, imageStatus)
-        }
-
-        actionTrip.setOnClickListener {
-            switchFragment(tripFragment, imageTrip)
-        }
+        switchFragment(homeFragment)
     }
 
-    fun switchFragment(fragment: Fragment, button: ImageButton) {
+    private fun switchFragment(fragment: Fragment) {
         supportFragmentManager.beginTransaction().apply {
             replace(R.id.fragment_container, fragment)
             commit()
-            clearActiveButtonStyle()
-            activeButton = button
-            applyActiveButtonStyle()
         }
     }
-
-    private fun applyActiveButtonStyle() {
-        activeButton.setColorFilter(ContextCompat.getColor(this, R.color.red))
-    }
-
-    private fun clearActiveButtonStyle() {
-        activeButton.clearColorFilter()
-    }
-
-    override fun onBackPressed() {
-        // Tangani tombol kembali
-        val currentFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
-        when (currentFragment) {
-            is HomeFragment -> super.onBackPressed() // Biarkan tombol kembali bekerja normal di HomeFragment
-            else -> {
-                // Ganti ke HomeFragment jika tidak di HomeFragment
-                switchFragment(homeFragment, imageHome)
-                // Tambahkan logika logout di sini jika diperlukan
-            }
-        }
-    }
-
 }
-

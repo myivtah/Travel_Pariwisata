@@ -34,10 +34,8 @@ class TambahPaketActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tambah_paket)
 
-        // Inisialisasi Firebase Database
         database = FirebaseDatabase.getInstance()
 
-        // Inisialisasi Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
 
         supportActionBar?.hide()
@@ -46,6 +44,7 @@ class TambahPaketActivity : AppCompatActivity() {
         val textId: EditText = findViewById(R.id.editTextId)
         val textName: EditText = findViewById(R.id.editTextNama)
         val textHarga: EditText = findViewById(R.id.editTextHarga)
+        val textDeskripsi : EditText = findViewById(R.id.editTextDeskripsi)
         val btnAddImage: Button = findViewById(R.id.buttonAddImage)
         val btnSaveMenu: Button = findViewById(R.id.buttonSaveMenu)
 
@@ -56,11 +55,11 @@ class TambahPaketActivity : AppCompatActivity() {
             val id: String = textId.text.toString().trim()
             val name: String = textName.text.toString().trim()
             val harga: Int = textHarga.text.toString().toInt()
+            val deskripsi: String = textDeskripsi.text.toString().trim() // Menambahkan deskripsi
             val bitmapDrawable: BitmapDrawable = image.drawable as BitmapDrawable
             val bitmap: Bitmap = bitmapDrawable.bitmap
 
-            // Menyimpan gambar ke Firebase Storage
-            uploadImageToStorage(id, name, harga, bitmap)
+            uploadImageToStorage(id, name, harga, deskripsi, bitmap)
         }
     }
 
@@ -70,7 +69,7 @@ class TambahPaketActivity : AppCompatActivity() {
         startActivityForResult(intent, IMAGE_REQUEST_CODE)
     }
 
-    private fun uploadImageToStorage(id: String, name: String, harga: Int, bitmap: Bitmap) {
+    private fun uploadImageToStorage(id: String, name: String, harga: Int, deskripsi: String, bitmap: Bitmap) {
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
@@ -90,19 +89,17 @@ class TambahPaketActivity : AppCompatActivity() {
                 val downloadUri = task.result
                 val imageUrl = downloadUri.toString()
 
-                // Simpan data ke Firebase Realtime Database
-                saveDataToRealtimeDatabase(id, name, harga, imageUrl)
+                saveDataToRealtimeDatabase(id, name, harga, deskripsi, imageUrl)
             } else {
-                // Handle failures
                 Toast.makeText(this, "Gagal mengunggah gambar", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
-    private fun saveDataToRealtimeDatabase(id: String, name: String, harga: Int, imageUrl: String) {
+    private fun saveDataToRealtimeDatabase(id: String, name: String, harga: Int, deskripsi: String, imageUrl: String) {
         val databaseReference = database.getReference("Paket")
-        val menuModel = PaketModel(id, name, harga, imageUrl)
-        databaseReference.child(id).setValue(menuModel)
+        val paketModel = PaketModel(id, name, harga, deskripsi, imageUrl)
+        databaseReference.child(id).setValue(paketModel)
 
         Toast.makeText(this, "Data berhasil disimpan", Toast.LENGTH_SHORT).show()
 
@@ -122,5 +119,4 @@ class TambahPaketActivity : AppCompatActivity() {
             }
         }
     }
-
 }

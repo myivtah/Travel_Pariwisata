@@ -81,18 +81,37 @@
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toTopOf="@+id/textView3" />
 
+    <TextView
+        android:id="@+id/textView4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="Deskripsi Paket : "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="@+id/textView3"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <EditText
+        android:id="@+id/editTextDeskripsiEdit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="36sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
     <ImageView
         android:id="@+id/imageMenuEdit"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="124dp"
         android:src="@drawable/image_search"
-        app:layout_constraintStart_toStartOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintStart_toStartOf="@+id/editTextDeskripsiEdit"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDeskripsiEdit" />
 
     <Button
         android:id="@+id/buttonAddImageEdit"
-        android:layout_width="42dp"
+        android:layout_width="55dp"
         android:layout_height="40dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="4dp"

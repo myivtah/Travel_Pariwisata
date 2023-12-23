@@ -6,7 +6,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -33,11 +32,13 @@ class EditPaketActivity : AppCompatActivity() {
     private lateinit var id: String
     private lateinit var name: String
     private var harga: Int = 0
+    private lateinit var deskripsi: String
     private lateinit var imageUrl: String
 
     private lateinit var textViewIdEdit: TextView
     private lateinit var editTextNamaEdit: EditText
     private lateinit var editTextHargaEdit: EditText
+    private lateinit var editTextDeskripsiEdit: EditText
     private lateinit var imageMenuEdit: ImageView
     private lateinit var buttonAddImageEdit: Button
     private lateinit var buttonSaveMenuEdit: Button
@@ -50,10 +51,8 @@ class EditPaketActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_paket)
 
-        // Inisialisasi Firebase Database
         databaseReference = FirebaseDatabase.getInstance().getReference("Paket")
 
-        // Inisialisasi Firebase Storage
         storageReference = FirebaseStorage.getInstance().reference
 
         supportActionBar?.hide()
@@ -61,24 +60,21 @@ class EditPaketActivity : AppCompatActivity() {
         textViewIdEdit = findViewById(R.id.textViewIdEdit)
         editTextNamaEdit = findViewById(R.id.editTextNamaEdit)
         editTextHargaEdit = findViewById(R.id.editTextHargaEdit)
+        editTextDeskripsiEdit = findViewById(R.id.editTextDeskripsiEdit)
         imageMenuEdit = findViewById(R.id.imageMenuEdit)
         buttonAddImageEdit = findViewById(R.id.buttonAddImageEdit)
         buttonSaveMenuEdit = findViewById(R.id.buttonSaveMenuEdit)
 
-        // Ambil data dari intent
         val intent = intent
         if (intent != null && intent.hasExtra("paket_id")) {
             id = intent.getStringExtra("paket_id") ?: ""
-            // Load data yang akan diedit dari Firebase
             loadDataToEdit(id)
         }
 
-        // Tambahkan listener untuk tombol tambah gambar
         buttonAddImageEdit.setOnClickListener {
             pickImageGallery()
         }
 
-        // Tambahkan listener untuk tombol simpan
         buttonSaveMenuEdit.setOnClickListener {
             saveEditedDataToDatabase()
         }
@@ -94,9 +90,9 @@ class EditPaketActivity : AppCompatActivity() {
                     textViewIdEdit.text = paket.id
                     editTextNamaEdit.setText(paket.name)
                     editTextHargaEdit.setText(paket.harga.toString())
+                    editTextDeskripsiEdit.setText(paket.deskripsi)
                     imageUrl = paket.imageUrl
 
-                    // Load gambar dari imageUrl ke imageMenuEdit
                     Glide.with(this@EditPaketActivity)
                         .load(paket.imageUrl)
                         .into(imageMenuEdit)
@@ -104,7 +100,6 @@ class EditPaketActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error
             }
         })
     }
@@ -116,33 +111,28 @@ class EditPaketActivity : AppCompatActivity() {
     }
 
     private fun saveEditedDataToDatabase() {
-        // Ambil data dari inputan user
         name = editTextNamaEdit.text.toString().trim()
         harga = editTextHargaEdit.text.toString().toInt()
+        deskripsi = editTextDeskripsiEdit.text.toString().trim()
 
-        // Jika pengguna memilih gambar baru, perbarui gambar di Firebase Storage
         if (imageMenuEdit.drawable != null) {
-            uploadImageToStorage(id, name, harga, (imageMenuEdit.drawable as BitmapDrawable).bitmap)
+            uploadImageToStorage(id, name, harga, deskripsi, (imageMenuEdit.drawable as BitmapDrawable).bitmap)
         } else {
             // Jika pengguna tidak memilih gambar baru, hanya perbarui data lainnya
-            updateDataInDatabase(id, name, harga, imageUrl)
+            updateDataInDatabase(id, name, harga, deskripsi, imageUrl)
         }
     }
 
-    private fun uploadImageToStorage(id: String, name: String, harga: Int, bitmap: Bitmap) {
+    private fun uploadImageToStorage(id: String, name: String, harga: Int, deskripsi: String, bitmap: Bitmap) {
         val baos = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
         val data = baos.toByteArray()
 
-        // Menghasilkan nama file gambar yang unik menggunakan timestamp
         val timestamp = System.currentTimeMillis()
         val imageName = "image_${id}_$timestamp.jpg"
 
         val imageReference = storageReference.child("images/$imageName")
         val uploadTask: UploadTask = imageReference.putBytes(data)
-
-        // Add logging
-        Log.d("ImageUpload", "Starting image upload")
 
         uploadTask.continueWithTask { task ->
             if (!task.isSuccessful) {
@@ -156,16 +146,11 @@ class EditPaketActivity : AppCompatActivity() {
                 val downloadUri = task.result
                 val newImageUrl = downloadUri.toString()
 
-                // Hapus gambar lama dari Firebase Storage (jika ada)
                 if (imageUrl.isNotEmpty()) {
                     deleteImageFromStorage(imageUrl) { success ->
                         if (success) {
-                            // Perbarui data di Firebase Realtime Database
-                            updateDataInDatabase(id, name, harga, newImageUrl)
-                            // Add logging
-                            Log.d("ImageUpload", "Image upload successful")
+                            updateDataInDatabase(id, name, harga, deskripsi, newImageUrl)
                         } else {
-                            // Handle the case where deleting the old image fails
                             Toast.makeText(
                                 this,
                                 "Gagal menghapus gambar lama",
@@ -174,15 +159,10 @@ class EditPaketActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    // Perbarui data di Firebase Realtime Database
-                    updateDataInDatabase(id, name, harga, newImageUrl)
-                    // Add logging
-                    Log.d("ImageUpload", "Image upload successful")
+                    updateDataInDatabase(id, name, harga, deskripsi, newImageUrl)
                 }
             } else {
-                // Handle failures
                 val errorMessage = task.exception?.message ?: "Unknown error"
-                Log.e("ImageUpload", "Image upload failed: $errorMessage")
                 Toast.makeText(this, "Gagal mengunggah gambar: $errorMessage", Toast.LENGTH_SHORT)
                     .show()
             }
@@ -193,23 +173,20 @@ class EditPaketActivity : AppCompatActivity() {
         val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
         storageReference.delete()
             .addOnSuccessListener {
-                // Gambar lama berhasil dihapus
                 callback(true)
             }
             .addOnFailureListener {
-                // Gagal menghapus gambar lama
                 callback(false)
             }
     }
 
-    private fun updateDataInDatabase(id: String, name: String, harga: Int, imageUrl: String) {
-        // Perbarui data di Firebase Realtime Database
-        val menuModel = PaketModel(id, name, harga, imageUrl)
+    private fun updateDataInDatabase(id: String, name: String, harga: Int, deskripsi: String, imageUrl: String) {
+        val menuModel = PaketModel(id, name, harga, deskripsi, imageUrl)
         databaseReference.child(id).setValue(menuModel)
 
         Toast.makeText(this, "Data berhasil diperbarui", Toast.LENGTH_SHORT).show()
 
-        finish() // Selesai activity setelah berhasil menyimpan data
+        finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -6,4 +6,9 @@
         <item name="cornerSize">8dp</item> <!-- Sesuaikan dengan ukuran sudut yang diinginkan -->
     </style>
 
+    <style name="roundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item> <!-- Sesuaikan dengan preferensi Anda -->
+    </style>
+
 </resources>
