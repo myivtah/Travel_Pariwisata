@@ -18,12 +18,10 @@ class WelcomeActivity : AppCompatActivity() {
         val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
 
         if (isLoggedIn) {
-            // Pengguna sudah login, buka MainActivity
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            finish() // Tutup WelcomeActivity agar tidak bisa kembali ke halaman ini
+            finish()
         } else {
-            // Pengguna belum login, tampilkan halaman welcome
             btnNext.setOnClickListener {
                 val intentNext = Intent(this, LoginActivity::class.java)
                 startActivity(intentNext)

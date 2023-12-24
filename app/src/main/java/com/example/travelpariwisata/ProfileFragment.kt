@@ -140,10 +140,8 @@ class ProfileFragment : Fragment() {
 
     private fun setAdminVisibility(userRole: String?) {
         if (userRole == "Admin") {
-            // User is an admin
             layoutAdmin.visibility = View.VISIBLE
         } else {
-            // User is not an admin
             layoutAdmin.visibility = View.GONE
         }
     }
@@ -207,28 +205,22 @@ class ProfileFragment : Fragment() {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.data != null) {
             val imageUri: Uri = data.data!!
-
-            // Upload gambar ke Firebase Storage
             uploadImageToFirebaseStorage(imageUri)
         }
     }
 
     private fun uploadImageToFirebaseStorage(imageUri: Uri) {
-        val imageName = "profile_image.jpg" // Nama gambar di Firebase Storage
+        val imageName = "profile_image.jpg"
         val imageReference = storageReference.child(imageName)
 
         imageReference.putFile(imageUri)
             .addOnSuccessListener { taskSnapshot ->
-                // Gambar berhasil diupload
                 imageReference.downloadUrl.addOnSuccessListener { uri ->
                     val imageUrl = uri.toString()
-
-                    // Simpan URL gambar di Firebase Realtime Database
                     saveImageUrlToDatabase(imageUrl)
                 }
             }
             .addOnFailureListener { e ->
-                // Gagal mengupload gambar
                 Toast.makeText(requireContext(), "Failed to upload image: ${e.message}", Toast.LENGTH_SHORT).show()
             }
     }
@@ -248,15 +240,10 @@ class ProfileFragment : Fragment() {
                             userId?.let { uid ->
                                 val userReference =
                                     FirebaseDatabase.getInstance().getReference("users").child(uid)
-
-                                // Sisipkan URL gambar ke kolom baru "profileUrl"
                                 userReference.child("profileUrl").setValue(imageUrl)
                                     .addOnCompleteListener { task ->
                                         if (task.isSuccessful) {
-                                            // Simpan path gambar ke SharedPreferences
                                             saveImagePathToLocal(imageUrl)
-
-                                            // Tampilkan gambar yang sudah diupload
                                             loadProfilePicture(imageUrl)
                                         } else {
                                             Toast.makeText(

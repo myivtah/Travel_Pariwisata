@@ -50,8 +50,7 @@ class PaketAdminAdapter(
         viewHolder.hapusButton.setOnClickListener {
             val position = viewHolder.adapterPosition
             if (position != RecyclerView.NO_POSITION) {
-                // Panggil metode showDeleteConfirmationDialog di sini
-                showDeleteConfirmationDialog(paketList[position])
+                             showDeleteConfirmationDialog(paketList[position])
             }
         }
 

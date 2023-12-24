@@ -18,7 +18,7 @@
             android:fontFamily="@font/akaya_telivigala"
             android:text="My Account"
             android:textColor="@color/black"
-            android:textSize="30sp"
+            android:textSize="40sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

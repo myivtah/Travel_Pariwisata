@@ -7,7 +7,6 @@ import java.io.Serializable
 class PaketModel(var id: String, var name: String, var harga: Int, var deskripsi: String, var imageUrl: String) :
     Serializable {
 
-    // Konstruktor tambahan untuk Firebase
     @JvmOverloads
     constructor() : this("", "", 0, "", "")
 }

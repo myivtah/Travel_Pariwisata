@@ -1,59 +1,155 @@
 package com.example.travelpariwisata
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.travelpariwisata.adapter.TransaksiAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class TicketFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [TicketFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class TicketFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private lateinit var transaksiAdapter: TransaksiAdapter
+    private lateinit var transaksiList: MutableList<HashMap<String, Any>>
+    private lateinit var transaksiRef: DatabaseReference
+    private lateinit var pesananRef: DatabaseReference
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_ticket, container, false)
+        val view = inflater.inflate(R.layout.fragment_ticket, container, false)
+
+        val recyclerView: RecyclerView = view.findViewById(R.id.recyclerTransaksi)
+        recyclerView.layoutManager = LinearLayoutManager(requireActivity())
+
+        transaksiList = mutableListOf()
+        transaksiAdapter = TransaksiAdapter(transaksiList, this)
+        recyclerView.adapter = transaksiAdapter
+
+        transaksiRef = FirebaseDatabase.getInstance().getReference("transaksi")
+        pesananRef = FirebaseDatabase.getInstance().getReference("pesanan")
+        auth = FirebaseAuth.getInstance()
+
+        getDataFromFirebase()
+
+        return view
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment StatusFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            TicketFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+    private fun getDataFromFirebase() {
+        val data = mutableListOf<HashMap<String, Any>>()
+
+        transaksiRef.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                data.clear()
+
+                for (transaksiSnapshot in snapshot.children) {
+                    val transaksiData = transaksiSnapshot.value
+                    if (transaksiData is HashMap<*, *>) {
+                        data.add(transaksiData as HashMap<String, Any>)
+                    }
                 }
+
+                transaksiList.clear()
+                transaksiList.addAll(data)
+                transaksiAdapter.notifyDataSetChanged()
             }
+
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(
+                    requireContext(),
+                    "Error: ${error.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        })
+    }
+
+    override fun onBatalButtonClicked(position: Int) {
+        val transaksiData = transaksiList[position]
+
+        val idTransaksi = transaksiData["id_trans"].toString()
+
+        transaksiRef.child(idTransaksi).removeValue()
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Transaksi berhasil dibatalkan", Toast.LENGTH_SHORT).show()
+                transaksiList.removeAt(position)
+                transaksiAdapter.notifyItemRemoved(position)
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Gagal membatalkan transaksi", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    override fun onBayarButtonClicked(position: Int) {
+        val transaksiData = transaksiList[position]
+
+        val idTransaksi = transaksiData["id_trans"].toString()
+
+        val namaPemesan = transaksiData["NamaPemesan"] as String
+        val noIdPemesan = transaksiData["NoIdPemesan"] as String
+        val noTelpPemesan = transaksiData["NoTelpPemesan"] as String
+        val alamatPemesan = transaksiData["AlamatPemesan"] as String
+        val paket = transaksiData["Paket"] as String
+        val harga: Double = when (val hargaRaw = transaksiData["Harga"]) {
+            is Long -> hargaRaw.toDouble()
+            is Double -> hargaRaw
+            else -> 0.0
+        }
+        val deskripsi = transaksiData["Deskripsi"] as String
+        val emailPemesan = transaksiData["EmailPemesan"] as String
+        val userIdPemesan = transaksiData["UserIdPemesan"] as String
+
+        val hargaPesanan = harga + (harga * 0.11)
+
+        val pesananData = hashMapOf(
+            "NamaPemesan" to namaPemesan,
+            "NoIdPemesan" to noIdPemesan,
+            "NoTelpPemesan" to noTelpPemesan,
+            "AlamatPemesan" to alamatPemesan,
+            "Paket" to paket,
+            "Harga" to hargaPesanan,
+            "Deskripsi" to deskripsi,
+            "EmailPemesan" to emailPemesan,
+            "UserIdPemesan" to userIdPemesan,
+            "TanggalPesanan" to getCurrentDateTimeInJakarta() // Gunakan waktu saat ini sebagai tanggal pesanan
+        )
+
+        pesananRef.child(idTransaksi).setValue(pesananData)
+            .addOnSuccessListener {
+                transaksiRef.child(idTransaksi).removeValue()
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Pesanan berhasil dibuat", Toast.LENGTH_SHORT).show()
+                        transaksiList.removeAt(position)
+                        transaksiAdapter.notifyItemRemoved(position)
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), "Gagal membuat pesanan", Toast.LENGTH_SHORT).show()
+                    }
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Gagal membuat pesanan", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun getCurrentDateTimeInJakarta(): String {
+        val timeZone = TimeZone.getTimeZone("Asia/Jakarta")
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+        dateFormat.timeZone = timeZone
+        return dateFormat.format(Date())
     }
 }

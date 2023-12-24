@@ -86,7 +86,6 @@ class EditPaketActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val paket = snapshot.getValue(PaketModel::class.java)
                 if (paket != null) {
-                    // Set data ke view
                     textViewIdEdit.text = paket.id
                     editTextNamaEdit.setText(paket.name)
                     editTextHargaEdit.setText(paket.harga.toString())
@@ -118,7 +117,6 @@ class EditPaketActivity : AppCompatActivity() {
         if (imageMenuEdit.drawable != null) {
             uploadImageToStorage(id, name, harga, deskripsi, (imageMenuEdit.drawable as BitmapDrawable).bitmap)
         } else {
-            // Jika pengguna tidak memilih gambar baru, hanya perbarui data lainnya
             updateDataInDatabase(id, name, harga, deskripsi, imageUrl)
         }
     }

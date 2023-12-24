@@ -47,19 +47,14 @@ class AdminFragment : Fragment() {
             startActivity(intent)
         }
 
-        // Menanggapi aksi penghapusan
         paketAdminAdapter.setOnItemClickListener { paket ->
-            // Ambil URL gambar dari Firebase Realtime Database
             val imageUrl = paket.imageUrl
 
-            // Hapus data dari Firebase Realtime Database
             databaseReference.child(paket.id).removeValue()
 
-            // Hapus gambar dari Firebase Storage
             deleteImageFromStorage(imageUrl, paket.id)
         }
 
-        // Menanggapi aksi edit
         paketAdminAdapter.setOnEditButtonClickListener { paket ->
             val intent = Intent(requireContext(), EditPaketActivity::class.java)
             intent.putExtra("paket_id", paket.id)
@@ -89,7 +84,6 @@ class AdminFragment : Fragment() {
     }
 
     private fun deleteImageFromStorage(imageUrl: String, paketId: String) {
-        // Hapus gambar dari Firebase Storage (contoh)
         val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
         storageReference.delete().addOnSuccessListener {
             Toast.makeText(

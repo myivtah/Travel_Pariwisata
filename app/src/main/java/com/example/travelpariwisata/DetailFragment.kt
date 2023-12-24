@@ -32,27 +32,20 @@ class DetailFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_detail, container, false)
 
         paketModel?.let {
-            // Tampilkan gambar menggunakan Picasso
             Picasso.get().load(it.imageUrl).into(view.findViewById<ImageView>(R.id.imageDetail))
 
-            // Set data ke TextViews
             view.findViewById<TextView>(R.id.textViewPaketDetail).text = it.name
             view.findViewById<TextView>(R.id.textViewHargaDetail).text = it.harga.toString()
             view.findViewById<TextView>(R.id.textViewDeskripsiDetail).text = it.deskripsi
         }
 
-        // Mendapatkan referensi ke buttonPesan
         val buttonPesan = view.findViewById<Button>(R.id.buttonPesan)
 
-        // Menambahkan OnClickListener ke buttonPesan
         buttonPesan.setOnClickListener {
-            // Membuat intent untuk pindah ke Activity Transaksi
             val intent = Intent(activity, TransaksiActivity::class.java)
 
-            // Menambahkan data yang diperlukan ke intent (contoh: paketModel)
             intent.putExtra("paketModel", paketModel)
 
-            // Memulai Activity Transaksi
             startActivity(intent)
         }
 
