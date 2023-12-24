@@ -47,12 +47,13 @@ class HomeFragment : Fragment() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error
-                Toast.makeText(
-                    requireContext(),
-                    "Error: ${error.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                activity?.let { activity ->
+                    Toast.makeText(
+                        activity,
+                        "Error: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         })
 
@@ -70,4 +71,3 @@ class HomeFragment : Fragment() {
             }
     }
 }
-

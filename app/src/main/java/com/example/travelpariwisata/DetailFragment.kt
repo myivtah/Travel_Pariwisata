@@ -45,7 +45,6 @@ class DetailFragment : Fragment() {
             val intent = Intent(activity, TransaksiActivity::class.java)
 
             intent.putExtra("paketModel", paketModel)
-
             startActivity(intent)
         }
 

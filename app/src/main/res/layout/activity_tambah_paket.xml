@@ -75,6 +75,7 @@
         android:id="@+id/editTextHarga"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
+        android:inputType="number"
         app:layout_constraintBottom_toBottomOf="@+id/textView3"
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toTopOf="@+id/textView3" />

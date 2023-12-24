@@ -23,10 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/arizonia"
-        android:text="Nikmati Perjalanmu"
+        android:text="Nikmati Perjalananmu"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
-        android:textSize="34sp"
+        android:textSize="36sp"
         app:layout_constraintTop_toBottomOf="@+id/imageLogo"
         tools:layout_editor_absoluteX="40dp" />
 
@@ -36,13 +36,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="88dp"
-        android:backgroundTint="#006c84"
+        android:backgroundTint="#2c466b"
         android:text="Next"
         android:textColor="@color/white"
         android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewWel1" />
 

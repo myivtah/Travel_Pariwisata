@@ -1,5 +1,6 @@
 package com.example.travelpariwisata
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -57,10 +58,15 @@ class TicketFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 data.clear()
 
+                val currentUserEmail = auth.currentUser?.email
+
                 for (transaksiSnapshot in snapshot.children) {
                     val transaksiData = transaksiSnapshot.value
                     if (transaksiData is HashMap<*, *>) {
-                        data.add(transaksiData as HashMap<String, Any>)
+                        val transaksiEmail = transaksiData["EmailPemesan"] as? String
+                        if (transaksiEmail == currentUserEmail) {
+                            data.add(transaksiData as HashMap<String, Any>)
+                        }
                     }
                 }
 
@@ -70,18 +76,38 @@ class TicketFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(
-                    requireContext(),
-                    "Error: ${error.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                if (isAdded) {
+                    Toast.makeText(
+                        requireContext(),
+                        "Error: ${error.message}",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
             }
         })
     }
 
     override fun onBatalButtonClicked(position: Int) {
-        val transaksiData = transaksiList[position]
+        showCancellationDialog(position)
+    }
 
+    private fun showCancellationDialog(position: Int) {
+        val builder = AlertDialog.Builder(requireContext())
+
+        builder.setTitle("Konfirmasi Pembatalan")
+        builder.setMessage("Apakah Anda yakin ingin membatalkan transaksi ini?")
+        builder.setPositiveButton("Ya") { _, _ ->
+            onBatalConfirmed(position)
+        }
+        builder.setNegativeButton("Tidak") { _, _ ->
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun onBatalConfirmed(position: Int) {
+        val transaksiData = transaksiList[position]
         val idTransaksi = transaksiData["id_trans"].toString()
 
         transaksiRef.child(idTransaksi).removeValue()
@@ -96,8 +122,35 @@ class TicketFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
     }
 
     override fun onBayarButtonClicked(position: Int) {
+        showConfirmationDialog(position)
+    }
+
+    private fun showConfirmationDialog(position: Int) {
+        val builder = AlertDialog.Builder(requireContext())
         val transaksiData = transaksiList[position]
 
+        val harga: Double = when (val hargaRaw = transaksiData["Harga"]) {
+            is Long -> hargaRaw.toDouble()
+            is Double -> hargaRaw
+            else -> 0.0
+        }
+        val tax = (harga * 0.11).toInt()
+        val totalHarga = (harga + tax).toInt()
+
+        builder.setTitle("Konfirmasi Pembayaran")
+        builder.setMessage("Total Harga Rp.$totalHarga\n\nApakah Anda yakin ingin melanjutkan pembayaran?")
+        builder.setPositiveButton("Ya") { _, _ ->
+            onBayarConfirmed(position)
+        }
+        builder.setNegativeButton("Tidak") { _, _ ->
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+    }
+
+    private fun onBayarConfirmed(position: Int) {
+        val transaksiData = transaksiList[position]
         val idTransaksi = transaksiData["id_trans"].toString()
 
         val namaPemesan = transaksiData["NamaPemesan"] as String
@@ -126,7 +179,7 @@ class TicketFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
             "Deskripsi" to deskripsi,
             "EmailPemesan" to emailPemesan,
             "UserIdPemesan" to userIdPemesan,
-            "TanggalPesanan" to getCurrentDateTimeInJakarta() // Gunakan waktu saat ini sebagai tanggal pesanan
+            "TanggalPesanan" to getCurrentDateTimeInJakarta()
         )
 
         pesananRef.child(idTransaksi).setValue(pesananData)
