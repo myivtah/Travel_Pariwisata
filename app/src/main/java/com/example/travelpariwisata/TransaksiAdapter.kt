@@ -17,6 +17,7 @@ class TransaksiAdapter(private val transaksiList: List<HashMap<String, Any>>, pr
     }
 
     class TransaksiViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val idTrans: TextView = itemView.findViewById(R.id.textViewIdTrans)
         val namaPemesan: TextView = itemView.findViewById(R.id.textViewNamaPemesan)
         val tanggalTransaksi: TextView = itemView.findViewById(R.id.textViewTanggalTransaksi)
         val paket: TextView = itemView.findViewById(R.id.textViewPaket)
@@ -26,6 +27,8 @@ class TransaksiAdapter(private val transaksiList: List<HashMap<String, Any>>, pr
         val noTelpPemesan: TextView = itemView.findViewById(R.id.textViewNoTelpPemesan)
         val alamatPemesan: TextView = itemView.findViewById(R.id.textViewAlamatPemesan)
         val totalHarga: TextView = itemView.findViewById(R.id.textViewTotalHarga)
+        val jumlahPeserta: TextView = itemView.findViewById(R.id.textViewJumlahPeserta)
+        val totalBayar: TextView = itemView.findViewById(R.id.textViewTotalBayar)
         val buttonBatal: Button = itemView.findViewById(R.id.buttonBatal)
         val buttonBayar: Button = itemView.findViewById(R.id.buttonBayar)
     }
@@ -38,22 +41,27 @@ class TransaksiAdapter(private val transaksiList: List<HashMap<String, Any>>, pr
     override fun onBindViewHolder(holder: TransaksiViewHolder, position: Int) {
         val transaksiData = transaksiList[position]
 
+        holder.idTrans.text = transaksiData["id_trans"].toString()
         holder.namaPemesan.text = transaksiData["NamaPemesan"].toString()
         holder.tanggalTransaksi.text = "${transaksiData["TanggalTransaksi"]}"
         holder.paket.text = transaksiData["Paket"].toString()
         holder.harga.text = "Rp. ${transaksiData["Harga"]}"
+        holder.jumlahPeserta.text = "${transaksiData["JumlahPeserta"]}"
+        val peserta: Int = transaksiData["JumlahPeserta"]?.toString()?.toIntOrNull() ?: 0
         val harga: Double = when (val hargaRaw = transaksiData["Harga"]) {
             is Long -> hargaRaw.toDouble()
             is Double -> hargaRaw
             else -> 0.0
         }
-        val tax = (harga * 0.11).toInt()
-        val totalHarga = (harga + tax).toInt()
+        val totalHarga = (peserta * harga).toInt()
+        holder.totalHarga.text = totalHarga.toString()
+        val tax = (totalHarga * 0.11).toInt()
         holder.tax.text = "Rp. ${tax}"
         holder.noIdPemesan.text = transaksiData["NoIdPemesan"].toString()
         holder.noTelpPemesan.text = transaksiData["NoTelpPemesan"].toString()
         holder.alamatPemesan.text = transaksiData["AlamatPemesan"].toString()
-        holder.totalHarga.text = "Rp. ${totalHarga}"
+        val totalBayar = (totalHarga + tax).toInt()
+        holder.totalBayar.text = "Rp. ${totalBayar}"
 
         holder.buttonBatal.setOnClickListener {
             listener.onBatalButtonClicked(position)

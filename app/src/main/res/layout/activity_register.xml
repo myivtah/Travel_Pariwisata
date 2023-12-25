@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#cdfcf6"
+    android:background="#ffffff"
     android:orientation="vertical"
     tools:context=".RegisterActivity">
 
@@ -12,10 +12,10 @@
         android:id="@+id/textRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="120dp"
         android:text="Register Account"
         android:textAlignment="center"
-        android:textColor="#006c84"
+        android:textColor="#39a7ff"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -93,13 +93,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtUsername" />
 
+
+    <EditText
+        android:id="@+id/txtRole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:backgroundTint="@color/black"
+        android:ems="10"
+        android:hint="Admin Or User"
+        android:minHeight="48dp"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.505"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
+
     <Button
         android:id="@+id/buttonRegis"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="32dp"
-        android:backgroundTint="#006c84"
+        android:backgroundTint="#39a7ff"
+        android:layout_marginTop="20dp"
         android:text="Register"
         android:textColor="@color/white"
         android:textSize="16sp"
@@ -107,6 +126,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/txtRole" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

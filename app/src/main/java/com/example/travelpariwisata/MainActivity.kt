@@ -10,7 +10,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigationView: BottomNavigationView
 
     private val homeFragment = HomeFragment()
-    private val statusFragment = TicketFragment()
+    private val statusFragment = OrderFragment()
     private val tripFragment = TripFragment()
     private val profileFragment = ProfileFragment()
 

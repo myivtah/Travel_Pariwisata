@@ -1,6 +1,7 @@
 package com.example.travelpariwisata
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpariwisata.adapter.TransaksiAdapter
+import com.example.travelpariwisata.menu.Pesanan
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -21,7 +23,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-class TicketFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
+class OrderFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
 
     private lateinit var transaksiAdapter: TransaksiAdapter
     private lateinit var transaksiList: MutableList<HashMap<String, Any>>
@@ -33,7 +35,7 @@ class TicketFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_ticket, container, false)
+        val view = inflater.inflate(R.layout.fragment_order, container, false)
 
         val recyclerView: RecyclerView = view.findViewById(R.id.recyclerTransaksi)
         recyclerView.layoutManager = LinearLayoutManager(requireActivity())
@@ -122,82 +124,37 @@ class TicketFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
     }
 
     override fun onBayarButtonClicked(position: Int) {
-        showConfirmationDialog(position)
-    }
-
-    private fun showConfirmationDialog(position: Int) {
-        val builder = AlertDialog.Builder(requireContext())
-        val transaksiData = transaksiList[position]
-
-        val harga: Double = when (val hargaRaw = transaksiData["Harga"]) {
-            is Long -> hargaRaw.toDouble()
-            is Double -> hargaRaw
-            else -> 0.0
-        }
-        val tax = (harga * 0.11).toInt()
-        val totalHarga = (harga + tax).toInt()
-
-        builder.setTitle("Konfirmasi Pembayaran")
-        builder.setMessage("Total Harga Rp.$totalHarga\n\nApakah Anda yakin ingin melanjutkan pembayaran?")
-        builder.setPositiveButton("Ya") { _, _ ->
-            onBayarConfirmed(position)
-        }
-        builder.setNegativeButton("Tidak") { _, _ ->
-        }
-
-        val dialog = builder.create()
-        dialog.show()
-    }
-
-    private fun onBayarConfirmed(position: Int) {
         val transaksiData = transaksiList[position]
         val idTransaksi = transaksiData["id_trans"].toString()
-
-        val namaPemesan = transaksiData["NamaPemesan"] as String
-        val noIdPemesan = transaksiData["NoIdPemesan"] as String
-        val noTelpPemesan = transaksiData["NoTelpPemesan"] as String
-        val alamatPemesan = transaksiData["AlamatPemesan"] as String
-        val paket = transaksiData["Paket"] as String
         val harga: Double = when (val hargaRaw = transaksiData["Harga"]) {
             is Long -> hargaRaw.toDouble()
             is Double -> hargaRaw
             else -> 0.0
         }
-        val deskripsi = transaksiData["Deskripsi"] as String
-        val emailPemesan = transaksiData["EmailPemesan"] as String
-        val userIdPemesan = transaksiData["UserIdPemesan"] as String
+        val peserta: Int = transaksiData["JumlahPeserta"]?.toString()?.toIntOrNull() ?: 0
+        val totalHarga = (harga * peserta).toInt()
+        val tax = (totalHarga * 0.11).toInt()
+        val totalBayar = totalHarga + tax
 
-        val hargaPesanan = harga + (harga * 0.11)
-
-        val pesananData = hashMapOf(
-            "NamaPemesan" to namaPemesan,
-            "NoIdPemesan" to noIdPemesan,
-            "NoTelpPemesan" to noTelpPemesan,
-            "AlamatPemesan" to alamatPemesan,
-            "Paket" to paket,
-            "Harga" to hargaPesanan,
-            "Deskripsi" to deskripsi,
-            "EmailPemesan" to emailPemesan,
-            "UserIdPemesan" to userIdPemesan,
-            "TanggalPesanan" to getCurrentDateTimeInJakarta()
+        val pesanan = Pesanan(
+            idTransaksi,
+            transaksiData["NamaPemesan"] as String,
+            transaksiData["NoIdPemesan"] as String,
+            transaksiData["NoTelpPemesan"] as String,
+            transaksiData["AlamatPemesan"] as String,
+            transaksiData["Paket"] as String,
+            totalBayar.toInt(),
+            transaksiData["Deskripsi"] as String,
+            transaksiData["EmailPemesan"] as String,
+            transaksiData["UserIdPemesan"] as String,
+            getCurrentDateTimeInJakarta()
         )
 
-        pesananRef.child(idTransaksi).setValue(pesananData)
-            .addOnSuccessListener {
-                transaksiRef.child(idTransaksi).removeValue()
-                    .addOnSuccessListener {
-                        Toast.makeText(requireContext(), "Pesanan berhasil dibuat", Toast.LENGTH_SHORT).show()
-                        transaksiList.removeAt(position)
-                        transaksiAdapter.notifyItemRemoved(position)
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(requireContext(), "Gagal membuat pesanan", Toast.LENGTH_SHORT).show()
-                    }
-            }
-            .addOnFailureListener {
-                Toast.makeText(requireContext(), "Gagal membuat pesanan", Toast.LENGTH_SHORT).show()
-            }
+        val intent = Intent(requireContext(), PaymentActivity::class.java)
+        intent.putExtra("pesanan", pesanan)
+        startActivity(intent)
     }
+
 
     private fun getCurrentDateTimeInJakarta(): String {
         val timeZone = TimeZone.getTimeZone("Asia/Jakarta")

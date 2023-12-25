@@ -26,6 +26,7 @@ class TransaksiActivity : AppCompatActivity() {
     private lateinit var editTextNoIdPemesan: EditText
     private lateinit var editTextNoTelPemesan: EditText
     private lateinit var editTextAlamatPemesan: EditText
+    private lateinit var editTextJumlahPeserta : EditText
 
     private lateinit var database: FirebaseDatabase
     private lateinit var transaksiRef: DatabaseReference
@@ -39,6 +40,7 @@ class TransaksiActivity : AppCompatActivity() {
         editTextNoIdPemesan = findViewById(R.id.editTextNoIdPemesan)
         editTextNoTelPemesan = findViewById(R.id.editTextNoTelPemesan)
         editTextAlamatPemesan = findViewById(R.id.editTextAlamatPemesan)
+        editTextJumlahPeserta = findViewById(R.id.editTextJumlahPeserta)
 
         database = FirebaseDatabase.getInstance()
         transaksiRef = database.getReference("transaksi")
@@ -65,6 +67,7 @@ class TransaksiActivity : AppCompatActivity() {
                 val noIdPemesan = editTextNoIdPemesan.text.toString()
                 val noTelPemesan = editTextNoTelPemesan.text.toString()
                 val alamatPemesan = editTextAlamatPemesan.text.toString()
+                val jumlahPeserta = editTextJumlahPeserta.text.toString()
 
                 if (namaPemesan.isBlank() || noIdPemesan.isBlank() || noTelPemesan.isBlank() || alamatPemesan.isBlank()) {
                     Toast.makeText(this@TransaksiActivity, "Semua kolom harus diisi!", Toast.LENGTH_SHORT).show()
@@ -91,6 +94,7 @@ class TransaksiActivity : AppCompatActivity() {
                 transaksiData["NoIdPemesan"] = noIdPemesan
                 transaksiData["NoTelpPemesan"] = noTelPemesan
                 transaksiData["AlamatPemesan"] = alamatPemesan
+                transaksiData["JumlahPeserta"] = jumlahPeserta
                 transaksiData["Paket"] = paket
                 transaksiData["Harga"] = harga
                 transaksiData["Deskripsi"] = deskripsi

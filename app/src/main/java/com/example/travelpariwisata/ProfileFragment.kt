@@ -36,6 +36,10 @@ class ProfileFragment : Fragment() {
 
     private val PICK_IMAGE_REQUEST = 1
 
+    private fun showToast(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -65,9 +69,14 @@ class ProfileFragment : Fragment() {
         storageReference = FirebaseStorage.getInstance().getReference("profile_images")
 
         val logoutView = view.findViewById<View>(R.id.actionLogout)
+        val hapusView = view.findViewById<View>(R.id.actionDelete)
 
         logoutView.setOnClickListener {
             showLogoutConfirmationDialog()
+        }
+
+        hapusView.setOnClickListener{
+            showDeleteConfirmationDialog()
         }
 
         adminMenu.setOnClickListener {
@@ -123,9 +132,7 @@ class ProfileFragment : Fragment() {
                                         loadProfilePicture(userProfilePicturePath)
                                     }
                                 }
-
                                 override fun onCancelled(error: DatabaseError) {
-                                    // Handle error
                                 }
                             })
                         }
@@ -258,14 +265,12 @@ class ProfileFragment : Fragment() {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        // Handle error
                     }
                 })
         }
     }
 
     private fun saveImagePathToLocal(imageUrl: String) {
-        // Simpan path gambar ke SharedPreferences
         val sharedPreferences = requireActivity().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
         editor.putString("userProfilePicture", imageUrl)
@@ -282,6 +287,96 @@ class ProfileFragment : Fragment() {
             .setNegativeButton("No") { _, _ ->
             }
             .show()
+    }
+
+    private fun showDeleteConfirmationDialog() {
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("Delete Confirmation")
+            .setMessage("Are you sure you want to delete this account?")
+            .setPositiveButton("Yes") { _, _ ->
+                performDelete()
+            }
+            .setNegativeButton("No") { _, _ ->
+            }
+            .show()
+    }
+
+    private fun performDelete() {
+        val userEmail = FirebaseAuth.getInstance().currentUser?.email
+
+        userEmail?.let { email ->
+            val userReference = FirebaseDatabase.getInstance().getReference("users")
+
+            userReference.orderByChild("email").equalTo(email)
+                .addListenerForSingleValueEvent(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        if (snapshot.exists()) {
+                            val userId = snapshot.children.firstOrNull()?.key
+
+                            userId?.let { uid ->
+                                val userReference =
+                                    FirebaseDatabase.getInstance().getReference("users").child(uid)
+
+                                userReference.addListenerForSingleValueEvent(object : ValueEventListener {
+                                    override fun onDataChange(userSnapshot: DataSnapshot) {
+                                        if (userSnapshot.exists()) {
+                                            val userProfilePicturePath =
+                                                userSnapshot.child("profileUrl")
+                                                    .getValue(String::class.java)
+
+                                            if (!userProfilePicturePath.isNullOrBlank()) {
+                                                val storageReference =
+                                                    FirebaseStorage.getInstance().getReferenceFromUrl(
+                                                        userProfilePicturePath
+                                                    )
+                                                storageReference.delete()
+                                                    .addOnSuccessListener {
+                                                        deleteUserData(uid)
+                                                    }
+                                                    .addOnFailureListener { e ->
+                                                        showToast("Gagal menghapus gambar profil: ${e.message}")
+                                                    }
+                                            } else {
+                                                deleteUserData(uid)
+                                            }
+                                        }
+                                    }
+
+                                    override fun onCancelled(error: DatabaseError) {
+                                        showToast("Gagal mengambil data pengguna: ${error.message}")
+                                    }
+                                })
+                            }
+                        }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        // Handle error
+                        showToast("Gagal menghapus akun: ${error.message}")
+                    }
+                })
+        }
+    }
+
+    private fun deleteUserData(userId: String) {
+        FirebaseDatabase.getInstance().getReference("users").child(userId)
+            .removeValue()
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val user = FirebaseAuth.getInstance().currentUser
+                    user?.delete()
+                        ?.addOnCompleteListener { authTask ->
+                            if (authTask.isSuccessful) {
+                                showToast("Akun berhasil dihapus")
+                                performLogout()
+                            } else {
+                                showToast("Gagal menghapus akun: ${authTask.exception?.message}")
+                            }
+                        }
+                } else {
+                    showToast("Gagal menghapus data akun: ${task.exception?.message}")
+                }
+            }
     }
 
     private fun performLogout() {
