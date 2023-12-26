@@ -45,7 +45,7 @@ class TransaksiAdapter(private val transaksiList: List<HashMap<String, Any>>, pr
         holder.namaPemesan.text = transaksiData["NamaPemesan"].toString()
         holder.tanggalTransaksi.text = "${transaksiData["TanggalTransaksi"]}"
         holder.paket.text = transaksiData["Paket"].toString()
-        holder.harga.text = "Rp. ${transaksiData["Harga"]}"
+        holder.harga.text = "Rp.${transaksiData["Harga"]}"
         holder.jumlahPeserta.text = "${transaksiData["JumlahPeserta"]}"
         val peserta: Int = transaksiData["JumlahPeserta"]?.toString()?.toIntOrNull() ?: 0
         val harga: Double = when (val hargaRaw = transaksiData["Harga"]) {
@@ -54,14 +54,14 @@ class TransaksiAdapter(private val transaksiList: List<HashMap<String, Any>>, pr
             else -> 0.0
         }
         val totalHarga = (peserta * harga).toInt()
-        holder.totalHarga.text = totalHarga.toString()
+        holder.totalHarga.text = "Rp.$totalHarga"
         val tax = (totalHarga * 0.11).toInt()
-        holder.tax.text = "Rp. ${tax}"
+        holder.tax.text = "Rp.${tax}"
         holder.noIdPemesan.text = transaksiData["NoIdPemesan"].toString()
         holder.noTelpPemesan.text = transaksiData["NoTelpPemesan"].toString()
         holder.alamatPemesan.text = transaksiData["AlamatPemesan"].toString()
         val totalBayar = (totalHarga + tax).toInt()
-        holder.totalBayar.text = "Rp. ${totalBayar}"
+        holder.totalBayar.text = "Rp.${totalBayar}"
 
         holder.buttonBatal.setOnClickListener {
             listener.onBatalButtonClicked(position)

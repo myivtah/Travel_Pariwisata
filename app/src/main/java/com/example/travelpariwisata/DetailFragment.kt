@@ -35,7 +35,7 @@ class DetailFragment : Fragment() {
             Picasso.get().load(it.imageUrl).into(view.findViewById<ImageView>(R.id.imageDetail))
 
             view.findViewById<TextView>(R.id.textViewPaketDetail).text = it.name
-            view.findViewById<TextView>(R.id.textViewHargaDetail).text = it.harga.toString()
+            view.findViewById<TextView>(R.id.textViewHargaDetail).text = "Rp."+it.harga.toString()+"/Orang"
             view.findViewById<TextView>(R.id.textViewDeskripsiDetail).text = it.deskripsi
         }
 

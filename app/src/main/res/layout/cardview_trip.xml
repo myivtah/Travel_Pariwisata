@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="10dp"
-    android:layout_marginTop="20dp"
+    android:layout_margin="20dp"
     app:strokeColor="@android:color/darker_gray"
     app:strokeWidth="0.8dp"
     app:cardBackgroundColor="@android:color/white">
@@ -29,11 +29,12 @@
 
         <TextView
             android:id="@+id/namaPemesan"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView26"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView26"
             app:layout_constraintTop_toTopOf="@+id/textView26" />
 
@@ -47,15 +48,16 @@
             android:text="Alamat : "
             android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView26" />
+            app:layout_constraintTop_toBottomOf="@+id/namaPemesan" />
 
         <TextView
             android:id="@+id/alamatPemesan"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView27"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView27"
             app:layout_constraintTop_toTopOf="@+id/textView27" />
 
@@ -69,15 +71,15 @@
             android:text="Email : "
             android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView27" />
+            app:layout_constraintTop_toBottomOf="@+id/alamatPemesan" />
 
         <TextView
             android:id="@+id/emailPemesan"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView28"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView28"
             app:layout_constraintTop_toTopOf="@+id/textView28" />
 
@@ -91,15 +93,16 @@
             android:text="No Identitas : "
             android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView28" />
+            app:layout_constraintTop_toBottomOf="@+id/emailPemesan" />
 
         <TextView
             android:id="@+id/identitasPemesan"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView29"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView29"
             app:layout_constraintTop_toTopOf="@+id/textView29" />
 
@@ -113,15 +116,16 @@
             android:text="No Hp : "
             android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView29" />
+            app:layout_constraintTop_toBottomOf="@+id/identitasPemesan" />
 
         <TextView
             android:id="@+id/hpPemesan"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView30"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView30"
             app:layout_constraintTop_toTopOf="@+id/textView30" />
 
@@ -135,15 +139,16 @@
             android:text="Paket : "
             android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView30" />
+            app:layout_constraintTop_toBottomOf="@+id/hpPemesan" />
 
         <TextView
             android:id="@+id/paketPemesan"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
             android:fontFamily="@font/poppins"
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView31"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView31"
             app:layout_constraintTop_toTopOf="@+id/textView31" />
 
@@ -157,15 +162,16 @@
             android:text="Tanggal : "
             android:textSize="17sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView31" />
+            app:layout_constraintTop_toBottomOf="@+id/paketPemesan" />
 
         <TextView
             android:id="@+id/tanggalPemesan"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins"
+            android:layout_marginEnd="20dp"
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView32"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView32"
             app:layout_constraintTop_toTopOf="@+id/textView32" />
 
@@ -174,24 +180,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
             android:fontFamily="@font/poppins"
             android:text="Harga : "
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/hargaPesanan"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView32" />
+            app:layout_constraintTop_toTopOf="@+id/hargaPesanan" />
 
         <TextView
             android:id="@+id/hargaPesanan"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:fontFamily="@font/poppins"
             android:textSize="17sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView33"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView33"
-            app:layout_constraintTop_toTopOf="@+id/textView33" />
+            app:layout_constraintTop_toBottomOf="@+id/tanggalPemesan" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -280,7 +280,7 @@ class ProfileFragment : Fragment() {
     private fun showLogoutConfirmationDialog() {
         val builder = AlertDialog.Builder(requireContext())
         builder.setTitle("Logout Confirmation")
-            .setMessage("Are you sure you want to logout?")
+            .setMessage("Are you sure you want to sign out?")
             .setPositiveButton("Yes") { _, _ ->
                 performLogout()
             }
@@ -351,7 +351,6 @@ class ProfileFragment : Fragment() {
                     }
 
                     override fun onCancelled(error: DatabaseError) {
-                        // Handle error
                         showToast("Gagal menghapus akun: ${error.message}")
                     }
                 })
