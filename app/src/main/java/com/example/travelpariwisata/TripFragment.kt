@@ -39,9 +39,15 @@ class TripFragment : Fragment() {
             override fun onDataChange(snapshot: DataSnapshot) {
                 pesananList.clear()
                 for (pesananSnapshot in snapshot.children) {
-                    val pesanan = pesananSnapshot.getValue(PesananModel::class.java)
-                    if (pesanan != null) {
-                        pesananList.add(pesanan)
+                    val pesananValue = pesananSnapshot.getValue()
+                    if (pesananValue is Long) {
+                        val pesananModel = PesananModel(harga = pesananValue.toInt())
+                        pesananList.add(pesananModel)
+                    } else {
+                        val pesanan = pesananSnapshot.getValue(PesananModel::class.java)
+                        pesanan?.let {
+                            pesananList.add(it)
+                        }
                     }
                 }
                 pesananAdapter.notifyDataSetChanged()
@@ -49,9 +55,8 @@ class TripFragment : Fragment() {
             override fun onCancelled(error: DatabaseError) {
             }
         }
-
         databaseReference.addValueEventListener(valueEventListener)
-
         return view
     }
 }
+

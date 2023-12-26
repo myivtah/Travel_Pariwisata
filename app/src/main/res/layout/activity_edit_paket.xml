@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="20dp"
-    tools:context=".EditPaketActivity">
+    tools:context=".TambahPaketActivity">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="20dp">
 
     <TextView
         android:id="@+id/textViewMenuEdit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Edit Paket"
-        android:textSize="30sp"
+        android:fontFamily="@font/poppins"
+        android:textSize="25sp"
         android:textAlignment="center"
         android:textColor="@color/black"
         android:textStyle="bold"
@@ -97,7 +102,8 @@
         android:id="@+id/editTextDeskripsiEdit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_margin="36sp"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -106,6 +112,7 @@
         android:id="@+id/imageMenuEdit"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:layout_marginTop="10dp"
         android:src="@drawable/image_search"
         app:layout_constraintStart_toStartOf="@+id/editTextDeskripsiEdit"
         app:layout_constraintTop_toBottomOf="@+id/editTextDeskripsiEdit" />
@@ -127,9 +134,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="50dp"
         android:text="Save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageMenuEdit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

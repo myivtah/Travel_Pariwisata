@@ -54,7 +54,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -62,24 +65,23 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/materialButtonEdit"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
                 android:backgroundTint="#39a7ff"
                 android:text="Edit"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.CornerSize" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/materialButtonHapus"
-                android:layout_width="150dp"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
                 android:backgroundTint="@color/red"
+                android:layout_marginTop="10dp"
                 android:text="Hapus"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialButtonEdit"
                 app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.CornerSize" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

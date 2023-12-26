@@ -1,5 +1,6 @@
 package com.example.travelpariwisata
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -11,17 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.travelpariwisata.adapter.TransaksiAdapter
-import com.example.travelpariwisata.menu.Pesanan
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
 
 class OrderFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
 
@@ -30,6 +26,8 @@ class OrderFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
     private lateinit var transaksiRef: DatabaseReference
     private lateinit var pesananRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
+
+    private val PAYMENT_REQUEST_CODE = 123
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -125,41 +123,19 @@ class OrderFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
 
     override fun onBayarButtonClicked(position: Int) {
         val transaksiData = transaksiList[position]
-        val idTransaksi = transaksiData["id_trans"].toString()
-        val harga: Double = when (val hargaRaw = transaksiData["Harga"]) {
-            is Long -> hargaRaw.toDouble()
-            is Double -> hargaRaw
-            else -> 0.0
-        }
-        val peserta: Int = transaksiData["JumlahPeserta"]?.toString()?.toIntOrNull() ?: 0
-        val totalHarga = (harga * peserta).toInt()
-        val tax = (totalHarga * 0.11).toInt()
-        val totalBayar = totalHarga + tax
 
-        val pesanan = Pesanan(
-            idTransaksi,
-            transaksiData["NamaPemesan"] as String,
-            transaksiData["NoIdPemesan"] as String,
-            transaksiData["NoTelpPemesan"] as String,
-            transaksiData["AlamatPemesan"] as String,
-            transaksiData["Paket"] as String,
-            totalBayar.toInt(),
-            transaksiData["Deskripsi"] as String,
-            transaksiData["EmailPemesan"] as String,
-            transaksiData["UserIdPemesan"] as String,
-            getCurrentDateTimeInJakarta()
-        )
-
+        // Send the data to PaymentActivity without starting the activity
         val intent = Intent(requireContext(), PaymentActivity::class.java)
-        intent.putExtra("pesanan", pesanan)
-        startActivity(intent)
+        intent.putExtra("transaksiData", transaksiData)
+        startActivityForResult(intent, PAYMENT_REQUEST_CODE)
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
 
-    private fun getCurrentDateTimeInJakarta(): String {
-        val timeZone = TimeZone.getTimeZone("Asia/Jakarta")
-        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
-        dateFormat.timeZone = timeZone
-        return dateFormat.format(Date())
+        if (requestCode == PAYMENT_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            // Handle the result if needed
+        }
     }
+
 }

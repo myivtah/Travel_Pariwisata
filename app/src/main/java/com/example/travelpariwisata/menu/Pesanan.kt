@@ -4,6 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class Pesanan(
+    val idPesanan: String,
     val IdTransaksi: String,
     val namaPemesan: String,
     val noIdPemesan: String,
@@ -17,20 +18,22 @@ data class Pesanan(
     val tanggalPesanan: String
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readInt() ?: 0, // Read as String
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: "",
-        parcel.readString() ?: ""
+    parcel.readString() ?: "",
+    parcel.readString() ?: "",
+    parcel.readString() ?: "",
+    parcel.readString() ?: "",
+    parcel.readString() ?: "",
+    parcel.readString() ?: "",
+    parcel.readString() ?: "",
+    parcel.readInt() ?: 0,
+    parcel.readString() ?: "",
+    parcel.readString() ?: "",
+    parcel.readString() ?: "",
+    parcel.readString() ?: ""
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(idPesanan)
         parcel.writeString(IdTransaksi)
         parcel.writeString(namaPemesan)
         parcel.writeString(noIdPemesan)

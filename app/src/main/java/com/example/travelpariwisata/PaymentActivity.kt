@@ -1,5 +1,7 @@
 package com.example.travelpariwisata
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -10,10 +12,13 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.travelpariwisata.menu.Pesanan
 import com.google.firebase.database.FirebaseDatabase
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 
 class PaymentActivity : AppCompatActivity() {
 
-    private var lastNumericKey = 0
     private val transaksiRef = FirebaseDatabase.getInstance().getReference("transaksi")
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,49 +44,91 @@ class PaymentActivity : AppCompatActivity() {
     }
 
     private fun onBuyButtonClick() {
-        val pesanan: Pesanan? = intent.getParcelableExtra("pesanan")
+        val transaksiData: HashMap<String, Any>? = intent.getSerializableExtra("transaksiData") as? HashMap<String, Any>
 
-        if (pesanan != null) {
-            kirimDataPesananKeDatabase(pesanan)
+        if (transaksiData != null) {
+            processCashPayment(transaksiData)
+            val intent = Intent(this, MainActivity::class.java)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+            startActivity(intent)
+            finish()
         } else {
-            Toast.makeText(this, "Data pesanan tidak valid", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Data transaksi tidak valid", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
 
+
     private fun updateChangeMoney() {
-        val pesanan: Pesanan? = intent.getParcelableExtra("pesanan")
+        val transaksiData: HashMap<String, Any>? = intent.getSerializableExtra("transaksiData") as? HashMap<String, Any>
         val editTextCash: EditText = findViewById(R.id.editTextCash)
         val textViewKembali: TextView = findViewById(R.id.textViewKembali)
 
-        if (pesanan != null) {
+        if (transaksiData != null) {
             val cashInput = editTextCash.text.toString().toDoubleOrNull()
 
             if (cashInput != null) {
-                val changeMoney = (cashInput - pesanan.harga).toInt()
+                val harga: Double = when (val hargaRaw = transaksiData["Harga"]) {
+                    is Long -> hargaRaw.toDouble()
+                    is Double -> hargaRaw
+                    else -> 0.0
+                }
+                val peserta: Int = transaksiData["JumlahPeserta"]?.toString()?.toIntOrNull() ?: 0
+                val totalHarga = (harga * peserta).toInt()
+                val tax = (totalHarga * 0.11).toInt()
+                val totalBayar = (totalHarga + tax)
+
+                val changeMoney = (cashInput - totalBayar).toInt()
                 textViewKembali.text = "Rp.$changeMoney"
             } else {
                 textViewKembali.text = "Change Money: Invalid Input"
             }
         } else {
-            Toast.makeText(this, "Data pesanan tidak valid", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Data transaksi tidak valid", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
 
-    private fun kirimDataPesananKeDatabase(pesanan: Pesanan) {
+    private fun processCashPayment(transaksiData: HashMap<String, Any>) {
+        val harga: Double = when (val hargaRaw = transaksiData["Harga"]) {
+            is Long -> hargaRaw.toDouble()
+            is Double -> hargaRaw
+            else -> 0.0
+        }
+        val peserta: Int = transaksiData["JumlahPeserta"]?.toString()?.toIntOrNull() ?: 0
+        val totalHarga = (harga * peserta).toInt()
+        val tax = (totalHarga * 0.11).toInt()
+        val totalBayar = (totalHarga + tax)
+
+
+        val resultIntent = Intent()
+        resultIntent.putExtra("pesanan", createPesananFromTransaksi(transaksiData, totalBayar))
+        setResult(Activity.RESULT_OK, resultIntent)
+
+        kirimDataPesananKeDatabase(transaksiData)
+
+        finish()
+    }
+
+    private fun kirimDataPesananKeDatabase(transaksiData: HashMap<String, Any>) {
         val databaseRef = FirebaseDatabase.getInstance().getReference("pesanan")
 
-        lastNumericKey++
+        val harga: Double = when (val hargaRaw = transaksiData["Harga"]) {
+            is Long -> hargaRaw.toDouble()
+            is Double -> hargaRaw
+            else -> 0.0
+        }
+        val peserta: Int = transaksiData["JumlahPeserta"]?.toString()?.toIntOrNull() ?: 0
+        val totalHarga = (harga * peserta).toInt()
+        val tax = (totalHarga * 0.11).toInt()
+        val totalBayar = (totalHarga + tax)
 
-        val pesananKey = lastNumericKey.toString()
-
-        databaseRef.child(pesananKey).setValue(pesanan)
+        val pesanan = createPesananFromTransaksi(transaksiData, totalBayar)
+        databaseRef.child(pesanan.idPesanan).setValue(pesanan)
             .addOnSuccessListener {
                 Toast.makeText(this, "Pembelian berhasil", Toast.LENGTH_SHORT).show()
-                val idTransaksi = pesanan.IdTransaksi
+                val idTransaksi = transaksiData["id_trans"].toString()
                 hapusDataTransaksi(idTransaksi)
-                finish()
             }
             .addOnFailureListener {
                 Toast.makeText(this, "Gagal membuat pembelian", Toast.LENGTH_SHORT).show()
@@ -90,5 +137,29 @@ class PaymentActivity : AppCompatActivity() {
 
     private fun hapusDataTransaksi(idTransaksi: String) {
         transaksiRef.child(idTransaksi).removeValue()
+    }
+
+    private fun getCurrentDateTimeInJakarta(): String {
+        val timeZone = TimeZone.getTimeZone("Asia/Jakarta")
+        val dateFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+        dateFormat.timeZone = timeZone
+        return dateFormat.format(Date())
+    }
+
+    private fun createPesananFromTransaksi(transaksiData: HashMap<String, Any>, totalBayar: Int): Pesanan {
+        return Pesanan(
+            idPesanan = transaksiData["id_trans"].toString(),
+            IdTransaksi = transaksiData["id_trans"].toString(),
+            namaPemesan = transaksiData["NamaPemesan"] as String,
+            noIdPemesan = transaksiData["NoIdPemesan"] as String,
+            noTelpPemesan = transaksiData["NoTelpPemesan"] as String,
+            alamatPemesan = transaksiData["AlamatPemesan"] as String,
+            paket = transaksiData["Paket"] as String,
+            harga = totalBayar,
+            deskripsi = transaksiData["Deskripsi"] as String,
+            emailPemesan = transaksiData["EmailPemesan"] as String,
+            userIdPemesan = transaksiData["UserIdPemesan"] as String,
+            tanggalPesanan = getCurrentDateTimeInJakarta()
+        )
     }
 }
