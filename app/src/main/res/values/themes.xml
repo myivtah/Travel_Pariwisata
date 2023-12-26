@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Base.Theme.TravelPariwisata" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">#39a7ff</item>
+        <item name="bottomAppBarStyle">@style/Widget.MaterialComponents.BottomAppBar</item>
     </style>
     <style name="Theme.TravelPariwisata" parent="Base.Theme.TravelPariwisata">
     </style>
