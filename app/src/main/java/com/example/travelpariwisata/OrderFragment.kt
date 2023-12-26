@@ -124,7 +124,6 @@ class OrderFragment : Fragment(), TransaksiAdapter.TransaksiAdapterListener {
     override fun onBayarButtonClicked(position: Int) {
         val transaksiData = transaksiList[position]
 
-        // Send the data to PaymentActivity without starting the activity
         val intent = Intent(requireContext(), PaymentActivity::class.java)
         intent.putExtra("transaksiData", transaksiData)
         startActivityForResult(intent, PAYMENT_REQUEST_CODE)

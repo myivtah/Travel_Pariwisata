@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardview_item_transaksi"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -158,7 +159,7 @@
             android:textColor="@color/black"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView22" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewAlamatPemesan" />
 
         <TextView
             android:id="@+id/textViewIdTrans"
@@ -272,14 +273,17 @@
 
         <TextView
             android:id="@+id/textViewAlamatPemesan"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginStart="10dp"
+            android:text="Alamat Pemesan"
             android:textColor="@color/black"
             android:textSize="13sp"
-            android:text="Alamat Pemesan"
-            app:layout_constraintBottom_toBottomOf="@+id/textView22"
-            app:layout_constraintStart_toEndOf="@+id/textView22"
-            app:layout_constraintTop_toTopOf="@+id/textView22" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
         <TextView
             android:id="@+id/textViewTotalBayar"
@@ -297,28 +301,29 @@
 
         <Button
             android:id="@+id/buttonBatal"
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
             android:backgroundTint="#FF0000"
-            android:layout_marginTop="40dp"
             android:text="Batal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView23"
+            app:layout_constraintTop_toBottomOf="@+id/buttonBayar"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.CornerSize" />
 
         <Button
             android:id="@+id/buttonBayar"
-            android:layout_width="150dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
             android:layout_marginTop="40dp"
             android:text="Bayar"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView23"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.MyApp.Button.CornerSize" />
     </androidx.constraintlayout.widget.ConstraintLayout>
