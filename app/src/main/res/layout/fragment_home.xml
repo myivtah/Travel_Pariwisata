@@ -20,7 +20,7 @@
             android:id="@+id/textViewUser"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Travel Pariwisata"
+            android:text="Destinasi"
             android:fontFamily="@font/poppins"
             android:textAlignment="center"
             android:textColor="@color/white"
